@@ -69,7 +69,9 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
 
         public async Task<Listinguser> PostAsync(Listinguser createRequest)
         {
-            return await TaskConstants<Listinguser>.NotImplemented;
+            await _context.Listinguser.AddAsync(createRequest);
+            // _context.Entry(createRequest).State = EntityState.Added;
+            return createRequest;
         }
 
         public async Task<Listinguser> DeleteAsync(string id)

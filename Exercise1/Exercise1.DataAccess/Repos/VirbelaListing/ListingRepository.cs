@@ -7,6 +7,7 @@ using Exercise1.Data.Models.VirbelaListing;
 using Exercise1.Data.Repos;
 using Exercise1.DataAccess.Context;
 using Exercise1.DataAccess.Repos.Extension;
+using System;
 
 namespace Exercise1.DataAccess.Repos.VirbelaListing
 {
@@ -45,9 +46,15 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
                     else if (kv.Key == "Description") {
                         query = query.Where(i => i.Description == kv.Value);
                     }
-                    else if (kv.Key == "Price"
-                    && decimal.TryParse(kv.Value, out decimal price)) {
+                    else if (kv.Key == "Price") {
+                        if (!decimal.TryParse(kv.Value, out decimal price))
+                            return new List<Listing>();
                         query = query.Where(i => i.Price == price);
+                    }
+                    else if (kv.Key == "CreatedDate") {
+                        if (!DateTime.TryParse(kv.Value, out DateTime date)) 
+                            return new List<Listing>();
+                        query = query.Where(i => i.CreatedDate == date);
                     }
                 }
             }
@@ -80,7 +87,9 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
 
         public async Task<Listing> PostAsync(Listing createRequest)
         {
-            return await TaskConstants<Listing>.NotImplemented;
+            await _context.Listing.AddAsync(createRequest);
+            // _context.Entry(createRequest).State = EntityState.Added;
+            return createRequest;
         }
 
         public async Task<Listing> DeleteAsync(string id)

@@ -32,7 +32,7 @@ namespace Exercise1.DataAccess.Repos
         [Fact]
         public async void ReturnNoneForInvalidParameters()
         {
-            // Arrange
+            // Arrange: -1 is not a valid Region Name.
             object invalidParams = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string> ("Name", "-1")
             };
@@ -40,14 +40,14 @@ namespace Exercise1.DataAccess.Repos
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
                 var result = await uow.RegionRepository.GetAsync(invalidParams);
-                Assert.Equal(0, result.Count());
+                Assert.Empty(result);
             }
         }
 
         [Fact]
         public async void ReturnNoneForInvalidId()
         {
-            // Arrange
+            // Arrange: ID column aut increases starting from 1
             string id = "-1";
 
             // Act & Assert
@@ -60,7 +60,7 @@ namespace Exercise1.DataAccess.Repos
         [Fact]
         public async void ReturnRegionForValidId()
         {
-            // Arrange
+            // Arrange: DB is seeded with at least one item.
             string id = "1";
 
             // Act & Assert
@@ -71,26 +71,17 @@ namespace Exercise1.DataAccess.Repos
         }
 
         [Fact]
-        public async void CreateRegionButNotCommitWithoutError()
+        public async void ReturnRegionForValidParameters()
         {
-            // Arrange
-            string uniqueName = "åß∂ƒ©";
-            var regionCreateRquest = new Region {
-                Id = 0,
-                Name = uniqueName
-            };
-            object guidParams = new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string> ("Name", uniqueName),
+            // Arrange: DB is seeded with Region Name "A".
+            object validParams = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("Name", "A")
             };
 
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
-                var result = await uow.RegionRepository.PostAsync(regionCreateRquest);
-                Assert.NotNull(result);
-            }
-            using (var uow = new UnitOfWork(context)) {
-                var result = await uow.RegionRepository.GetAsync(guidParams);
-                Assert.Equal(0, result.Count());
+                var result = await uow.RegionRepository.GetAsync(validParams);
+                Assert.Single(result);
             }
         }
 

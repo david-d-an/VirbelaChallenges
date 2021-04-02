@@ -32,7 +32,7 @@ namespace Exercise1.DataAccess.Repos
         [Fact]
         public async void ReturnNoneForInvalidParameters()
         {
-            // Arrange
+            // Arrange: -1 is not a valid User ID.
             object invalidParams = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string> ("UserId", "-1")
             };
@@ -40,14 +40,29 @@ namespace Exercise1.DataAccess.Repos
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
                 var result = await uow.ListinguserRepository.GetAsync(invalidParams);
-                Assert.Equal(0, result.Count());
+                Assert.Empty(result);
+            }
+        }
+
+        [Fact]
+        public async void ReturnListingUserForValidParameters()
+        {
+            // Arrange: Database is seeded with John Smith in Listinguser table.
+            object invalidParams = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("UserId", "jsmith")
+            };
+
+            // Act & Assert
+            using (var uow = new UnitOfWork(context)) {
+                var result = await uow.ListinguserRepository.GetAsync(invalidParams);
+                Assert.Single(result);
             }
         }
 
         [Fact]
         public async void ReturnNoneForInvalidId()
         {
-            // Arrange
+            // Arrange: ID column aut increases starting from 1
             string id = "-1";
 
             // Act & Assert
@@ -60,42 +75,13 @@ namespace Exercise1.DataAccess.Repos
         [Fact]
         public async void ReturnListingUserForValidId()
         {
-            // Arrange
+            // Arrange: DB is seeded with at least one item.
             string id = "1";
 
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
                 var result = await uow.ListinguserRepository.GetAsync(id);
                 Assert.NotNull(result);
-            }
-        }
-
-        [Fact]
-        public async void CreateListingUserButNotCommitWithoutError()
-        {
-            // Arrange
-            string guid = new Guid().ToString().Substring(0, 30);
-            var listingUserCreateRquest = new Listinguser {
-                Id = 0,
-                Userid = guid,
-                Email = "test@contoso.com",
-                Firstname = "John",
-                Lastname = "Smith",
-                Password = "TestPassword",
-                RegionId = 1
-            };
-            object guidParams = new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string> ("UserId", guid),
-            };
-
-            // Act & Assert
-            using (var uow = new UnitOfWork(context)) {
-                var result = await uow.ListinguserRepository.PostAsync(listingUserCreateRquest);
-                Assert.NotNull(result);
-            }
-            using (var uow = new UnitOfWork(context)) {
-                var result = await uow.ListinguserRepository.GetAsync(guidParams);
-                Assert.Equal(0, result.Count());
             }
         }
 

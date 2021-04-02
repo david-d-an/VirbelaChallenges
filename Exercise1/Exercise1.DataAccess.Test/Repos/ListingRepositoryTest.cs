@@ -26,31 +26,32 @@ namespace Exercise1.DataAccess.Repos
             dbOptionsbuilder = new DbContextOptionsBuilder<VirbelaListingContext>()
                                 .UseSqlServer(connStr);
             context = new VirbelaListingContext(dbOptionsbuilder.Options);
-            // unitOfWork = new UnitOfWork(context);
         }
 
         [Fact]
         public async void ReturnNoneForInvalidParameters()
         {
-            // Arrange
+            // Arrange: Varchar columns shall not be populated with -1 only. 
+            //          Price shall be positve decimal.
+            //          User.Id shall be 1 or larger
             object invalidParams = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string> ("CreatorId", "-1"),
-                new KeyValuePair<string, string> ("Title", "" ),
-                new KeyValuePair<string, string> ("Description", "" ),
+                new KeyValuePair<string, string> ("Title", "-1" ),
+                new KeyValuePair<string, string> ("Description", "-1" ),
                 new KeyValuePair<string, string> ("Price", "-1")
             };
 
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
                 var result = await uow.ListingRepository.GetAsync(invalidParams);
-                Assert.Equal(0, result.Count());
+                Assert.Empty(result);
             }
         }
 
         [Fact]
         public async void ReturnNoneForInvalidId()
         {
-            // Arrange
+            // Arrange: DB is seeded with at least one item.
             string id = "-1";
 
             // Act & Assert
@@ -63,7 +64,7 @@ namespace Exercise1.DataAccess.Repos
         [Fact]
         public async void ReturnListingForValidId()
         {
-            // Arrange
+            // Arrange: DB is seeded with at least one item.
             string id = "1";
 
             // Act & Assert
@@ -74,34 +75,25 @@ namespace Exercise1.DataAccess.Repos
         }
 
         [Fact]
-        public async void CreateListingButNotCommitWithoutError()
+        public async void ReturnListingForValidParameters()
         {
-            // Arrange
-            string guid = new Guid().ToString();
-            var listingCreateRquest = new Listing {
-                Id = 0,
-                Title = guid,
-                Description = guid,
-                Price = (decimal)999.99,
-                CreatorId = 1,
-                CreatedDate = DateTime.Now
-            };
-            object guidParams = new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string> ("Title", guid),
-                new KeyValuePair<string, string> ("Description", guid)
+            // Arrange: Varchar columns shall not be populated with -1 only. 
+            //          Price shall be positve decimal.
+            //          User.Id shall be 1 or larger
+            object validParams = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("CreatorId", "1"),
+                new KeyValuePair<string, string> ("Title", "Listing A" ),
+                // new KeyValuePair<string, string> ("Description", "-1" ),
+                new KeyValuePair<string, string> ("Price", "12.34"),
+                new KeyValuePair<string, string> ("CreatedDate", "03/21/2021 09:15:22 AM")
             };
 
             // Act & Assert
             using (var uow = new UnitOfWork(context)) {
-                var result = await uow.ListingRepository.PostAsync(listingCreateRquest);
-                Assert.NotNull(result);
-            }
-            using (var uow = new UnitOfWork(context)) {
-                var result = await uow.ListingRepository.GetAsync(guidParams);
-                Assert.Equal(0, result.Count());
+                var result = await uow.ListingRepository.GetAsync(validParams);
+                Assert.Single(result);
             }
         }
-
     }
 
 }

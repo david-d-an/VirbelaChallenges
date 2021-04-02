@@ -6,7 +6,6 @@ using Exercise1.Common.Tasks;
 using Exercise1.Data.Models.VirbelaListing;
 using Exercise1.Data.Repos;
 using Exercise1.DataAccess.Context;
-using Exercise1.DataAccess.Repos.Extension;
 
 namespace Exercise1.DataAccess.Repos.VirbelaListing
 {
