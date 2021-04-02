@@ -27,6 +27,19 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
             DbSet<Region> dbSet =  _context.Region;
             IQueryable<Region> query = dbSet.AsNoTracking();
 
+            if (parameters != null) {
+                var param = (List<KeyValuePair<string, string>>)parameters;
+
+                foreach(KeyValuePair<string, string> kv in param) {
+                    if (kv.Value == null)
+                        continue;
+
+                    if (kv.Key == "Name") {
+                        query = query.Where(i => i.Name == kv.Value);
+                    }
+                }
+            }
+
             if ((pageNum??0) >  0 && (pageSize??0) > 0) {
                 query = query
                     .Skip((pageNum.Value - 1) * pageSize.Value)

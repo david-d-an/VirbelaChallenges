@@ -77,9 +77,13 @@ namespace Exercise1.Api.Authentication.Provider
             // await Task.Delay(0);
             // return _mockListingUsers
             //     .SingleOrDefault(x => x.Userid == userid);
-            return await _unitOfWork
-                .ListinguserRepository
-                .GetAsync(userid);
+            object userIdParam = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("UserId", userid)
+            };
+            var result = await _unitOfWork
+                        .ListinguserRepository
+                        .GetAsync(userIdParam);
+            return result.FirstOrDefault();
         }
 
         // helper methods
