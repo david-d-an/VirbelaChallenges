@@ -67,14 +67,5 @@ namespace Exercise1.Api
                 .AddJsonFile("Config/config.json", false, true)
                 .AddEnvironmentVariables();
         }
-
-        private static void SeedEmployeeDatabase(IHost host)
-        {
-            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope()) {
-                var seeder = scope.ServiceProvider.GetService<VirbelaListingDataSeeder>();
-                seeder.Seed();
-            }
-        }
     }
 }
