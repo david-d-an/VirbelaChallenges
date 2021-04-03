@@ -7,35 +7,40 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Exercise1.Api.Authentication.Provider;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using Exercise1.Data.Models.Authentication;
 using Exercise1.Api.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Exercise1.Api.Test.Helper;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Exercise1.Api.Controllers
 {
     public class UserControllerShould {
         private Mock<ILogger<UserController>> mockLogger;
         private UserService userService;
+        private CancellationToken cancellationToken;
         private UserController _controller;
         private IConfigurationRoot mockConfiguration;
         private Mock<IUnitOfWork> mockUnitOfWork;
+        private Mock<IRepository<Listinguser>> mockListinguserRepository;
 
         public UserControllerShould()
         {
             mockLogger = new Mock<ILogger<UserController>>();
             mockConfiguration = Helper.GetConfiguration();
             mockUnitOfWork = new Mock<IUnitOfWork>();
+            mockListinguserRepository = new Mock<IRepository<Listinguser>>();
             userService = new UserService(mockConfiguration, mockUnitOfWork.Object);
+
+            cancellationToken = new CancellationToken();
 
             _controller = new UserController(
                 mockLogger.Object, 
                 mockConfiguration, 
                 userService, 
                 mockUnitOfWork.Object);
+            // Need MockProblemDetails to be able to test with Problem() response type
+            _controller.ProblemDetailsFactory = new MockProblemDetailsFactory();
         }
 
         [Theory]
@@ -86,7 +91,7 @@ namespace Exercise1.Api.Controllers
                 Userid = userid,
                 Password = password
             };
-            var result = await _controller.Login(loginModel);
+            var result = await _controller.Login(loginModel, cancellationToken);
 
             // Assert
             var okResult = result as OkObjectResult;
@@ -115,9 +120,6 @@ namespace Exercise1.Api.Controllers
                                                     string password,
                                                     int regionId) {
             // Arrange
-            Mock<IRepository<Listinguser>> mockListinguserRepository = 
-                new Mock<IRepository<Listinguser>>();
-
             var userIdParam = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string> ("UserId", userid)
             };
@@ -151,7 +153,7 @@ namespace Exercise1.Api.Controllers
                 Userid = userid,
                 Password = password + "abc"
             };
-            var result = await _controller.Login(loginModel);
+            var result = await _controller.Login(loginModel, cancellationToken);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
@@ -168,9 +170,6 @@ namespace Exercise1.Api.Controllers
                                                     string password,
                                                     int regionId) {
             // Arrange
-            Mock<IRepository<Listinguser>> mockListinguserRepository = 
-                new Mock<IRepository<Listinguser>>();
-
             var userIdParam = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string> ("UserId", userid)
             };
@@ -202,21 +201,141 @@ namespace Exercise1.Api.Controllers
                 Userid = userid,
                 Password = password
             };
-            var result = await _controller.Login(loginModel);
+            var result = await _controller.Login(loginModel, cancellationToken);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
             Assert.Equal(401, (result as UnauthorizedResult).StatusCode);
         }
 
-
-        [Fact]
-        public async void ShouldRegisterUser() {
+        [Theory]
+        [InlineData(0, "starburst", "starburst@example.com", "Star", "Burst", "test1", 5)]
+        public async void ShouldRegisterUser(int id,
+                                             string userid, 
+                                             string email,
+                                             string firstname,
+                                             string lastname,            
+                                             string password,
+                                             int regionId) {
             // Arrange
-            await Task.Delay(0);
+            var newUser = new Listinguser {
+                Id = id,
+                Userid = userid,
+                Email = email,
+                Firstname = firstname,
+                Lastname = lastname,
+                Password = password,
+                RegionId = regionId
+            };
+
+            mockListinguserRepository
+                .Setup(x => x.GetAsync(
+                    It.Is<List<KeyValuePair<string, string>>>(x => 
+                        x.First(p => p.Key == "UserId").Value == userid
+                    ),
+                    null,
+                    null
+                ))
+                .ReturnsAsync(new List<Listinguser>());
+            mockListinguserRepository
+                .Setup(x => x.PostAsync(
+                    It.Is<Listinguser>(x => x.Userid == userid)
+                ))
+                .ReturnsAsync(new Listinguser{
+                    Id = 1,
+                    Userid = userid,
+                    Email = email,
+                    Firstname = firstname,
+                    Lastname = lastname,
+                    Password = password,
+                    RegionId = regionId
+                });
+
+            mockUnitOfWork
+                .Setup(uow => uow.ListinguserRepository)
+                .Returns(mockListinguserRepository.Object);
+
             // Act
+            var result = await _controller.Post(newUser, cancellationToken);
 
             // Assert
+            var createdResult = result as CreatedAtActionResult;
+            Assert.NotNull(createdResult);
+            Assert.Equal(201, createdResult.StatusCode);
+
+            Assert.IsType<Listinguser>(createdResult.Value);
+            var valueResult = createdResult.Value as Listinguser;
+            Assert.NotNull(valueResult);
+
+            // Assert.Equal(id, valueResult.Id);
+            Assert.Equal(userid, valueResult.Userid);
+            Assert.Equal(email, valueResult.Email);
+            Assert.Equal(firstname, valueResult.Firstname);
+            Assert.Equal(lastname, valueResult.Lastname);
+            Assert.Equal(regionId, valueResult.RegionId);
+        }
+
+        [Theory]
+        [InlineData(0, "starburst", "starburst@example.com", "Star", "Burst", "test1", 5)]
+        public async void ShouldNotRegisterIfDuplicateUserIdFound(
+            int id,
+            string userid, 
+            string email,
+            string firstname,
+            string lastname,            
+            string password,
+            int regionId)
+        {
+            // Arrange
+            var newUser = new Listinguser {
+                Id = id,
+                Userid = userid,
+                Email = email,
+                Firstname = firstname,
+                Lastname = lastname,
+                Password = password,
+                RegionId = regionId
+            };
+
+            mockListinguserRepository
+                .Setup(x => x.GetAsync(
+                    It.Is<List<KeyValuePair<string, string>>>(x => 
+                        x.First(p => p.Key == "UserId").Value == userid
+                    ),
+                    null,
+                    null
+                ))
+                .ReturnsAsync(new List<Listinguser>{ new Listinguser() });
+            mockListinguserRepository
+                .Setup(x => x.PostAsync(
+                    It.Is<Listinguser>(x => x.Userid == userid)
+                ))
+                .ReturnsAsync(new Listinguser{
+                    Id = 1,
+                    Userid = userid,
+                    Email = email,
+                    Firstname = firstname,
+                    Lastname = lastname,
+                    Password = password,
+                    RegionId = regionId
+                });
+
+            mockUnitOfWork
+                .Setup(uow => uow.ListinguserRepository)
+                .Returns(mockListinguserRepository.Object);
+
+            // Act
+            var result = await _controller.Post(newUser, cancellationToken);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<ObjectResult>(result);
+            var objResult = result as ObjectResult;
+            Assert.Equal(500, objResult.StatusCode);
+
+            var valueResult = objResult.Value as ProblemDetails;
+            Assert.Contains("Registration Unsucessful", valueResult.Title);
+            Assert.Contains("UserId already exists", valueResult.Detail);
         }
 
     }

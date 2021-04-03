@@ -317,5 +317,65 @@ namespace Exercise1.Api.Controllers
             Assert.Equal(401, (result as UnauthorizedResult).StatusCode);
         }
 
+        [Theory]
+        [InlineData(
+            "New Title",
+            "New Description",
+            15.11
+        )]
+        public async void ShouldCreateListing(string title,
+                                              string description,
+                                              decimal price) {
+            // Arrange
+            DateTime createdDate = DateTime.Now;
+            _controller.ControllerContext = 
+                Helper.GetControllerContext(authenticatedUser);
+
+            var newListing = new Listing {
+                Id = 0,
+                Title = title,
+                Description = description,
+                Price = price,
+                CreatorId = authenticatedUser.Id,
+                CreatedDate = createdDate
+            };
+
+            mockListingRepository
+                .Setup(x => x.PostAsync(
+                    It.Is<Listing>(x => 
+                        x.Title == newListing.Title &&
+                        x.Description == newListing.Description &&
+                        x.Price == newListing.Price &&
+                        x.CreatorId == newListing.CreatorId &&
+                        x.CreatedDate == newListing.CreatedDate
+                    )
+                ))
+                .ReturnsAsync(newListing);
+
+            mockUnitOfWork
+                .Setup(uow => uow.ListingRepository)
+                .Returns(mockListingRepository.Object);
+
+            // Act
+            var result = await _controller.Post(
+                newListing, 
+                cancellationToken);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.NotNull(okResult);
+            Assert.Equal(200, okResult.StatusCode);
+
+            var valueResult = okResult.Value as Listing;
+            Assert.NotNull(valueResult);
+
+            // Assert.Equal(updatedListing.Id, valueResult.Id);
+            // Assert.Equal(updatedListing.Title, valueResult.Title);
+            // Assert.Equal(updatedListing.Description, valueResult.Description);
+            // Assert.Equal(updatedListing.Price, valueResult.Price);
+            // Assert.Equal(updatedListing.CreatorId, valueResult.CreatorId);
+            // Assert.Equal(updatedListing.CreatedDate, valueResult.CreatedDate);
+        }
+
     }
 }
