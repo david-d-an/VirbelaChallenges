@@ -38,7 +38,7 @@ namespace Exercise1.Api.Controllers
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody]LoginModel login)    
-        {    
+        {
             AuthenticateResponse response = await _userService.Authenticate(login);
             if (response.Userid == null) {
                 _logger.LogWarning($"Unauthorized access has been attempted for user id '{login.Userid}'.");

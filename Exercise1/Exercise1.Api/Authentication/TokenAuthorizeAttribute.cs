@@ -1,3 +1,4 @@
+using Exercise1.Common.Security;
 using Exercise1.Data.Models.VirbelaListing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +15,7 @@ namespace Exercise1.Api.Authentication
         private bool isTokenExpired(string token) {             
             var tokenHandler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwtSecurityToken = tokenHandler.ReadJwtToken(token);
-            var expiry = jwtSecurityToken.Claims
-                        .FirstOrDefault(c => c.Type == "exp").Value;
-
-            if (double.TryParse(expiry, out double exp)) {
-                return DateTime.UtcNow >= ExpirtyToDateTime(exp);
-            }
-            return true;
-         }
-
-         private DateTime ExpirtyToDateTime(double exp) {
-            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            DateTime expiryDateTime = epoch.AddSeconds(exp);
-            return expiryDateTime;
+            return JsonWebTokenizer.IsTokenExpired(jwtSecurityToken);
          }
 
         public void OnAuthorization(AuthorizationFilterContext context) {

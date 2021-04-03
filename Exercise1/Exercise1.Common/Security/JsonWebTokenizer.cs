@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Exercise1.Common.Security {
     public static class JsonWebTokenizer {
@@ -24,7 +25,22 @@ namespace Exercise1.Common.Security {
                 signingCredentials: credentials);
             
             return new JwtSecurityTokenHandler().WriteToken(token);
-        } 
+        }
+
+        public static bool IsTokenExpired(JwtSecurityToken jwtSecurityToken) {
+            var expiry = jwtSecurityToken.Claims
+                        .FirstOrDefault(c => c.Type == "exp").Value;
+            if (double.TryParse(expiry, out double exp)) {
+                return DateTime.UtcNow >= ExpirtyToDateTime(exp);
+            }
+            return true;
+        }
+
+        public static DateTime ExpirtyToDateTime(double exp) {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime expiryDateTime = epoch.AddSeconds(exp);
+            return expiryDateTime;
+         }
 
     }
 }
