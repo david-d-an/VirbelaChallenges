@@ -362,19 +362,20 @@ namespace Exercise1.Api.Controllers
                 cancellationToken);
 
             // Assert
-            var okResult = result as OkObjectResult;
-            Assert.NotNull(okResult);
-            Assert.Equal(200, okResult.StatusCode);
+            var createdResult = result as CreatedAtActionResult;
+            Assert.NotNull(createdResult);
+            Assert.Equal(201, createdResult.StatusCode);
 
-            var valueResult = okResult.Value as Listing;
+            Assert.IsType<Listing>(createdResult.Value);
+            var valueResult = createdResult.Value as Listing;
             Assert.NotNull(valueResult);
 
-            // Assert.Equal(updatedListing.Id, valueResult.Id);
-            // Assert.Equal(updatedListing.Title, valueResult.Title);
-            // Assert.Equal(updatedListing.Description, valueResult.Description);
-            // Assert.Equal(updatedListing.Price, valueResult.Price);
-            // Assert.Equal(updatedListing.CreatorId, valueResult.CreatorId);
-            // Assert.Equal(updatedListing.CreatedDate, valueResult.CreatedDate);
+            // Assert.Equal(newListing.Id, valueResult.Id);
+            Assert.Equal(newListing.Title, valueResult.Title);
+            Assert.Equal(newListing.Description, valueResult.Description);
+            Assert.Equal(newListing.Price, valueResult.Price);
+            Assert.Equal(newListing.CreatorId, valueResult.CreatorId);
+            Assert.Equal(newListing.CreatedDate, valueResult.CreatedDate);
         }
 
     }
