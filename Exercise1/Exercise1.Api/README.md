@@ -1,3 +1,9 @@
+# Applicant Information
+* Name: David An
+* Email: david.d.an@outlook.com
+* Phone: (301) 351-0655
+* Recruiter in charge: Ari Alcaraz (ari.alcaraz@virbela.com)
+
 # Introduction
 The project was written for .Net Core 3.1.
 Please install the .Net Core SDK 3.1 to locally debug the projecgt.
