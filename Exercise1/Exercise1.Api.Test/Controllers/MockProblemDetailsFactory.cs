@@ -10,7 +10,8 @@ namespace Exercise1.Api.Controllers
     {
         public MockProblemDetailsFactory() { }
 
-        public override ProblemDetails CreateProblemDetails(HttpContext httpContext,
+        public override ProblemDetails CreateProblemDetails(
+            HttpContext httpContext,
             int? statusCode = default, 
             string title = default,
             string type = default, 
@@ -35,13 +36,14 @@ namespace Exercise1.Api.Controllers
             string detail = default,
             string instance = default)
         {
-            return new ValidationProblemDetails(new Dictionary<string, string[]>()) {
-                Detail = detail,
-                Instance = instance,
-                Status = statusCode,
-                Title = title,
-                Type = type,
-            };
+            return new ValidationProblemDetails(
+                new Dictionary<string, string[]>()) {
+                    Detail = detail,
+                    Instance = instance,
+                    Status = statusCode,
+                    Title = title,
+                    Type = type,
+                };
         }
     }
 }
