@@ -3,10 +3,7 @@ using Exercise1.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Exercise1.Common.Security;
 using Exercise1.DataAccess.Repos.VirbelaListing;
-using System.Linq;
 using System.Collections.Generic;
-using Exercise1.Data.Models.VirbelaListing;
-using System;
 
 namespace Exercise1.DataAccess.Repos
 {
@@ -15,7 +12,6 @@ namespace Exercise1.DataAccess.Repos
         private string connStr;
         private DbContextOptionsBuilder<VirbelaListingContext> dbOptionsbuilder;
         private VirbelaListingContext context;
-        private UnitOfWork unitOfWork;
 
         public ListingRepositoryShould()
         {
