@@ -6,7 +6,6 @@ using Exercise1.Common.Tasks;
 using Exercise1.Data.Models.VirbelaListing;
 using Exercise1.Data.Repos;
 using Exercise1.DataAccess.Context;
-using Exercise1.DataAccess.Repos.Extension;
 
 namespace Exercise1.DataAccess.Repos.VirbelaListing
 {
@@ -26,6 +25,19 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
         {
             DbSet<Region> dbSet =  _context.Region;
             IQueryable<Region> query = dbSet.AsNoTracking();
+
+            if (parameters != null) {
+                var param = (List<KeyValuePair<string, string>>)parameters;
+
+                foreach(KeyValuePair<string, string> kv in param) {
+                    if (kv.Value == null)
+                        continue;
+
+                    if (kv.Key == "Name") {
+                        query = query.Where(i => i.Name == kv.Value);
+                    }
+                }
+            }
 
             if ((pageNum??0) >  0 && (pageSize??0) > 0) {
                 query = query

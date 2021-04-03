@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Exercise1.Data.Models.Authentication;
 using Exercise1.Api.Authentication;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Exercise1.Api.Controllers
 {
@@ -37,10 +39,12 @@ namespace Exercise1.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody]LoginModel login)    
-        {    
+        public async Task<IActionResult> Login(
+            [FromBody]LoginModel login, 
+            CancellationToken cancellationToken)    
+        {
             AuthenticateResponse response = await _userService.Authenticate(login);
-            if (response.Userid == null) {
+            if (response?.Userid == null) {
                 _logger.LogWarning($"Unauthorized access has been attempted for user id '{login.Userid}'.");
                 return Unauthorized();
             }
@@ -52,28 +56,28 @@ namespace Exercise1.Api.Controllers
         // TO DO: Assess YAGNI
         [HttpGet("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Get(
+        public async Task<IActionResult> Get(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("User/Get(id) has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;           
+            return await TaskConstants<IActionResult>.NotImplemented;           
         }
 
         // TO DO: Assess YAGNI
         [HttpPut("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Put(
+        public async Task<IActionResult> Put(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("UserController.Put has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;           
+            return await TaskConstants<IActionResult>.NotImplemented;           
         }
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<ActionResult<Listinguser>> Post(
+        public async Task<IActionResult> Post(
             Listinguser listinguserCreateRequest, 
             CancellationToken cancellationToken) 
         {
@@ -85,27 +89,33 @@ namespace Exercise1.Api.Controllers
                     .HashPassword(null, password);
                 #nullable disable
 
-                Listinguser existingUser =  await _unitOfWork
-                    .ListinguserRepository
-                    .GetAsync(listinguserCreateRequest.Userid);
+                object parameters = new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string> ("UserId", listinguserCreateRequest.Userid)
+                };
 
-                if (existingUser != null) {
+                var existingUsers =  await _unitOfWork
+                    .ListinguserRepository
+                    .GetAsync(parameters);
+
+                if (existingUsers != null && existingUsers.Count() > 0) {
                     _logger.LogError(
                         $@"UserId '{listinguserCreateRequest.Userid}'
                         already exists. Registration unsuccessful..");
-                    throw new Exception($"UserId already exists: {listinguserCreateRequest.Userid}");
+                    return Problem(
+                        detail: $"UserId already exists: {listinguserCreateRequest.Userid}",
+                        statusCode: 500,
+                        title: "Registration Unsucessful");
                 }
 
                 var listinguser = await _unitOfWork.ListinguserRepository
                                     .PostAsync(listinguserCreateRequest);
                 _unitOfWork.Commit();
 
-                // _logger.LogInformation(
-                //     $@"User account for '{listinguser.Id}: {listinguser.Userid}'
-                //     has been successfully created.");
+                _logger.LogInformation(
+                    $@"User account for '{listinguser.Id}: {listinguser.Userid}'
+                    has been successfully created.");
                 return CreatedAtAction(
                     nameof(Post), 
-                    nameof(ListingController), 
                     new { Id = listinguser.Id }, 
                     listinguser);
             } catch(Exception ex) {
@@ -118,12 +128,12 @@ namespace Exercise1.Api.Controllers
         // TO DO: Assess YAGNI
         [HttpDelete("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Delete(
+        public async Task<IActionResult> Delete(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("UserController.Delete has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
     }

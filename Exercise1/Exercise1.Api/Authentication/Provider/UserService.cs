@@ -77,9 +77,13 @@ namespace Exercise1.Api.Authentication.Provider
             // await Task.Delay(0);
             // return _mockListingUsers
             //     .SingleOrDefault(x => x.Userid == userid);
-            return await _unitOfWork
-                .ListinguserRepository
-                .GetAsync(userid);
+            object userIdParam = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("UserId", userid)
+            };
+            var result = await _unitOfWork
+                        .ListinguserRepository
+                        .GetAsync(userIdParam);
+            return result.FirstOrDefault();
         }
 
         // helper methods
@@ -88,6 +92,12 @@ namespace Exercise1.Api.Authentication.Provider
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            // Default token expiration 30 minutes
+            DateTime expiry = DateTime.Now.AddMinutes(30);
+            if (double.TryParse(_configuration["Jwt:LifeSpan"], 
+                out double tokenLife)) {
+                expiry = DateTime.UtcNow.AddMinutes(tokenLife);
+            }
             var tokenDescriptor = new SecurityTokenDescriptor {
                 Subject = new ClaimsIdentity(new[] {
                     new Claim("Id", user.Id.ToString()),
@@ -97,8 +107,7 @@ namespace Exercise1.Api.Authentication.Provider
                     new Claim("RegionId", user.RegionId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
-                // Expiriation shall be short. Kepping 30 mins for ease of debug
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = expiry,
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), 
                     SecurityAlgorithms.HmacSha256Signature),

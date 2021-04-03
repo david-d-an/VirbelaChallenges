@@ -11,6 +11,8 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
         private IRepository<Listinguser> _listingusersRepository;
         private IRepository<Region> _regionRepository;
 
+        public UnitOfWork() { }
+
         public UnitOfWork(VirbelaListingContext virbelaListingContext) { 
             _virbelaListingContext = virbelaListingContext; 
         }

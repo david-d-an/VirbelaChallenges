@@ -50,10 +50,14 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
             return await query.ToListAsync();
         }
 
-        public async Task<Listinguser> GetAsync(string userid)
+        public async Task<Listinguser> GetAsync(string id)
         {
+            int idNum;
+            if (!int.TryParse(id, out idNum))
+                return await Task.FromResult<Listinguser>(null);
+
             IQueryable<Listinguser> result = _context.Listinguser
-                .Where(r => r.Userid == userid);
+                .Where(r => r.Id == idNum);
 
             return await result.FirstOrDefaultAsync();
         }
@@ -65,7 +69,9 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
 
         public async Task<Listinguser> PostAsync(Listinguser createRequest)
         {
-            return await TaskConstants<Listinguser>.NotImplemented;
+            await _context.Listinguser.AddAsync(createRequest);
+            // _context.Entry(createRequest).State = EntityState.Added;
+            return createRequest;
         }
 
         public async Task<Listinguser> DeleteAsync(string id)
