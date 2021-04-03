@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Exercise1.Data.Models.Authentication;
 using Exercise1.Api.Authentication;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Exercise1.Api.Controllers
 {
@@ -85,27 +87,33 @@ namespace Exercise1.Api.Controllers
                     .HashPassword(null, password);
                 #nullable disable
 
-                Listinguser existingUser =  await _unitOfWork
-                    .ListinguserRepository
-                    .GetAsync(listinguserCreateRequest.Userid);
+                object parameters = new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string> ("UserId", listinguserCreateRequest.Userid)
+                };
 
-                if (existingUser != null) {
+                var existingUsers =  await _unitOfWork
+                    .ListinguserRepository
+                    .GetAsync(parameters);
+
+                if (existingUsers != null && existingUsers.Count() > 0) {
                     _logger.LogError(
                         $@"UserId '{listinguserCreateRequest.Userid}'
                         already exists. Registration unsuccessful..");
-                    throw new Exception($"UserId already exists: {listinguserCreateRequest.Userid}");
+                    return Problem(
+                        detail: $"UserId already exists: {listinguserCreateRequest.Userid}",
+                        statusCode: 500,
+                        title: "Registration Unsucessful");
                 }
 
                 var listinguser = await _unitOfWork.ListinguserRepository
                                     .PostAsync(listinguserCreateRequest);
                 _unitOfWork.Commit();
 
-                // _logger.LogInformation(
-                //     $@"User account for '{listinguser.Id}: {listinguser.Userid}'
-                //     has been successfully created.");
+                _logger.LogInformation(
+                    $@"User account for '{listinguser.Id}: {listinguser.Userid}'
+                    has been successfully created.");
                 return CreatedAtAction(
                     nameof(Post), 
-                    nameof(ListingController), 
                     new { Id = listinguser.Id }, 
                     listinguser);
             } catch(Exception ex) {

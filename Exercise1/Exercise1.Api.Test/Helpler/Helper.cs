@@ -41,7 +41,6 @@ namespace Exercise1.Api.Test.Helper {
             return new PasswordHasher<object?>()
                 .HashPassword(null, password);
             #nullable disable
-
         }
 
         private static string GenerateJwtToken(Listinguser user) {
