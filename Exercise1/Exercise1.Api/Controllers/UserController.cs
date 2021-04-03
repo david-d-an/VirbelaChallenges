@@ -52,28 +52,28 @@ namespace Exercise1.Api.Controllers
         // TO DO: Assess YAGNI
         [HttpGet("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Get(
+        public async Task<IActionResult> Get(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("User/Get(id) has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;           
+            return await TaskConstants<IActionResult>.NotImplemented;           
         }
 
         // TO DO: Assess YAGNI
         [HttpPut("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Put(
+        public async Task<IActionResult> Put(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("UserController.Put has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;           
+            return await TaskConstants<IActionResult>.NotImplemented;           
         }
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<ActionResult<Listinguser>> Post(
+        public async Task<IActionResult> Post(
             Listinguser listinguserCreateRequest, 
             CancellationToken cancellationToken) 
         {
@@ -118,12 +118,12 @@ namespace Exercise1.Api.Controllers
         // TO DO: Assess YAGNI
         [HttpDelete("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listinguser>> Delete(
+        public async Task<IActionResult> Delete(
             string id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("UserController.Delete has not been implemented.");
-            return await TaskConstants<ActionResult<Listinguser>>.NotImplemented;
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
     }

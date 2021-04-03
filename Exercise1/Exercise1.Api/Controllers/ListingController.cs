@@ -35,7 +35,7 @@ namespace Exercise1.Api.Controllers
             Duration = 60,
             Location = ResponseCacheLocation.Client,
             NoStore = false)]
-        public async Task<ActionResult<IEnumerable<Listing>>> Get(
+        public async Task<IActionResult> Get(
             [FromQuery] int? pageNum,
             [FromQuery] int? pageSize,
             [FromQuery] string firstName,
@@ -64,18 +64,18 @@ namespace Exercise1.Api.Controllers
             Duration = 60,
             Location = ResponseCacheLocation.Client,
             NoStore = false)]
-        public async Task<ActionResult<Listing>> Get(
+        public async Task<IActionResult> Get(
             int id, 
             CancellationToken cancellationToken)
         {
             var listing = await _unitOfWork.ListingRepository
                                 .GetAsync(id.ToString());
-            return listing;
+            return Ok(listing);
         }
 
         [HttpPut("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listing>> Put(
+        public async Task<IActionResult> Put(
             string id, 
             Listing listingUpdateRequest, 
             CancellationToken cancellationToken)
@@ -84,11 +84,17 @@ namespace Exercise1.Api.Controllers
             if (!int.TryParse(id, out idNum))
                 return BadRequest();
 
+            var user = (Listinguser)HttpContext.Items["User"];
             try {
                 Listing listing = await _unitOfWork.ListingRepository
+                                        .GetAsync(id);
+                if (listing == null || listing.CreatorId != user.Id)
+                    return Unauthorized();
+ 
+                Listing updatedListing = await _unitOfWork.ListingRepository
                                         .PutAsync(id, listingUpdateRequest);
                 _unitOfWork.Commit();
-                return listing;
+                return Ok(updatedListing);
             } catch(Exception ex) {
                 _logger.LogError(ex, ex.Message);
                 _unitOfWork.Rollback();
@@ -98,7 +104,7 @@ namespace Exercise1.Api.Controllers
 
         [HttpPost]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listing>> Post(
+        public async Task<IActionResult> Post(
             Listing listingCreateRequest, 
             CancellationToken cancellationToken)
         {
@@ -121,12 +127,12 @@ namespace Exercise1.Api.Controllers
         // TO DO: Assess YAGNI
         [HttpDelete("{id}")]
         [TokenAuthorize()]
-        public async Task<ActionResult<Listing>> Delete(
+        public async Task<IActionResult> Delete(
             int id, 
             CancellationToken cancellationToken)
         {
             _logger.LogWarning("ListingController.Delete has not been implemented.");
-            return await TaskConstants<ActionResult<Listing>>.NotImplemented;
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
     }
 }

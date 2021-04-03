@@ -82,7 +82,16 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
 
         public async Task<Listing> PutAsync(string id, Listing updateRequest)
         {
-            return await TaskConstants<Listing>.NotImplemented;
+            // TO DO: remove async from IRepository<>
+            // Put is no longer async as it's under UnitOfWork
+            // Async acitivty happens during SaveChangesAsync
+            // Task.Dealy added here to comply with interface where put is async
+            await Task.Delay(0);
+            _context.Listing.Update(updateRequest);
+            _context.Attach<Listing>(updateRequest).State = EntityState.Modified;
+            _context.Entry<Listing>(updateRequest).State = EntityState.Modified; 
+
+            return updateRequest;
         }
 
         public async Task<Listing> PostAsync(Listing createRequest)

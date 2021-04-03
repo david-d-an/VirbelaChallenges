@@ -25,10 +25,12 @@ namespace Exercise1.Api.Test.Helper {
             return configuration;
         }
 
-        public static ControllerContext GetControllerContext(Listinguser user) {
+        public static ControllerContext GetControllerContext(Listinguser user = null) {
             var context = new DefaultHttpContext();
-            context.Items["User"] = user;
-            context.Request.Headers["Authorization"] = GenerateJwtToken(user);
+            if (user != null) {
+                context.Items["User"] = user;
+                context.Request.Headers["Authorization"] = GenerateJwtToken(user);
+            }
             return new ControllerContext() {
                 HttpContext = context
             };

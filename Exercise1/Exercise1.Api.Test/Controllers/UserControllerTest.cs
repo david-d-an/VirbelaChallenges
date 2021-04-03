@@ -13,6 +13,7 @@ using Exercise1.Data.Models.Authentication;
 using Exercise1.Api.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Exercise1.Api.Test.Helper;
+using System.Threading.Tasks;
 
 namespace Exercise1.Api.Controllers
 {
@@ -80,10 +81,6 @@ namespace Exercise1.Api.Controllers
                 .Setup(uow => uow.ListinguserRepository)
                 .Returns(mockListinguserRepository.Object);
 
-            ///////////////
-            // _controller.ControllerContext = Helper.GetControllerContext(expectedUser);
-            //////////////
-
             // Act
             var loginModel = new LoginModel {
                 Userid = userid,
@@ -94,6 +91,7 @@ namespace Exercise1.Api.Controllers
             // Assert
             var okResult = result as OkObjectResult;
             Assert.NotNull(okResult);
+            Assert.Equal(200, okResult.StatusCode);
 
             var authenticateResponse = okResult.Value as AuthenticateResponse;
             Assert.NotNull(authenticateResponse);
@@ -215,7 +213,7 @@ namespace Exercise1.Api.Controllers
         [Fact]
         public async void ShouldRegisterUser() {
             // Arrange
-
+            await Task.Delay(0);
             // Act
 
             // Assert
