@@ -39,7 +39,9 @@ namespace Exercise1.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody]LoginModel login)    
+        public async Task<IActionResult> Login(
+            [FromBody]LoginModel login, 
+            CancellationToken cancellationToken)    
         {
             AuthenticateResponse response = await _userService.Authenticate(login);
             if (response?.Userid == null) {
