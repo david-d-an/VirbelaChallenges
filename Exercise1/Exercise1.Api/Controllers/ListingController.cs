@@ -114,7 +114,6 @@ namespace Exercise1.Api.Controllers
 
                 return CreatedAtAction(
                     nameof(Post), 
-                    nameof(ListingController), 
                     new { Id = listing.Id }, 
                     listing);
             } catch(Exception ex) {
