@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+
+    <key>Label</key>
+    <string>dotnet.run.Execise1.Api.plist</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <false/>
+
+    <key>WorkingDirectory</key>
+    <string>/usr/local/var/www/Execise1.Api</string>
+
+    <key>StandardOutPath</key>
+    <string>/usr/local/var/www/Execise1.Api/logs/stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/usr/local/var/www/Execise1.Api/logs/stderr.log</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/share/dotnet/dotnet</string>
+        <string>Execise1.Api.dll</string>
+        <string>--environment=Staging</string>
+        <string>--urls=https://localhost:23001</string>
+    </array>
+
+  </dict>
+</plist>
