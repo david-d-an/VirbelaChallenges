@@ -205,11 +205,20 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
                 Password = "AQAAAAEAACcQAAAAEDxkjJUF+sOyIinGOU2cO0YfvDtEP0hbK526b/qF/USWtT1fVwDVWf6yBKhAir9fCQ==",
                 RegionId = 4
             });
+            modelBuilder.Entity<Listinguser>().HasData(new Listinguser {
+                Id = 4,
+                Userid = "maradona",
+                Email = "maradona@contoso.com",
+                Firstname = "Diego",
+                Lastname = "Maradona",
+                Password = "AQAAAAEAACcQAAAAEDxkjJUF+sOyIinGOU2cO0YfvDtEP0hbK526b/qF/USWtT1fVwDVWf6yBKhAir9fCQ==",
+                RegionId = 1
+            });
 
             modelBuilder.Entity<Listing>().HasData(new Listing {
                 Id = 1,
                 Title = "Listing A",
-                Description = "",
+                Description = "Description for Listing A. Details for Listing A is provided here.",
                 Price = (decimal)12.34,
                 CreatorId = 1,
                 CreatedDate = new DateTime(2021, 03, 21, 09, 15, 22)
@@ -217,7 +226,7 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
             modelBuilder.Entity<Listing>().HasData(new Listing {
                 Id = 2,
                 Title = "Listing B",
-                Description = "",
+                Description = "Description for Listing B. Details for Listing B is provided here.",
                 Price = (decimal)22.34,
                 CreatorId = 1,
                 CreatedDate = new DateTime(2021, 04, 01, 13, 46, 52)
@@ -225,7 +234,7 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
             modelBuilder.Entity<Listing>().HasData(new Listing {
                 Id = 3,
                 Title = "Listing C",
-                Description = "",
+                Description = "Description for Listing C. Details for Listing C is provided here.",
                 Price = (decimal)32.45,
                 CreatorId = 2,
                 CreatedDate = new DateTime(2021, 03, 11, 15, 42, 59)
@@ -233,7 +242,7 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
             modelBuilder.Entity<Listing>().HasData(new Listing {
                 Id = 4,
                 Title = "Listing D",
-                Description = "",
+                Description = "Description for Listing D. Details for Listing D is provided here.",
                 Price = (decimal)455.56,
                 CreatorId = 2,
                 CreatedDate = new DateTime(2021, 02, 08, 14, 21, 46)
@@ -241,10 +250,26 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
             modelBuilder.Entity<Listing>().HasData(new Listing {
                 Id = 5,
                 Title = "Listing E",
-                Description = "",
+                Description = "Description for Listing E. Details for Listing E is provided here.",
                 Price = (decimal)556.99,
                 CreatorId = 3,
                 CreatedDate = new DateTime(2021, 02, 27, 18, 19, 19)
+            });
+            modelBuilder.Entity<Listing>().HasData(new Listing {
+                Id = 6,
+                Title = "Listing F",
+                Description = "Description for Listing F. Details for Listing F is provided here.",
+                Price = (decimal)489.99,
+                CreatorId = 4,
+                CreatedDate = new DateTime(2021, 04, 01, 19, 43, 58)
+            });
+            modelBuilder.Entity<Listing>().HasData(new Listing {
+                Id = 7,
+                Title = "Listing G",
+                Description = "Description for Listing G. Details for Listing G is provided here.",
+                Price = (decimal)124.99,
+                CreatorId = 4,
+                CreatedDate = new DateTime(2021, 03, 31, 08, 22, 38)
             });
         }
     }
