@@ -10,6 +10,7 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
         private IRepository<Listing> _listingRepository;
         private IRepository<Listinguser> _listingusersRepository;
         private IRepository<Region> _regionRepository;
+        private IRepository<Region_Listing> _region_ListingRepository;
 
         public UnitOfWork() { }
 
@@ -35,6 +36,13 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
             get { return _regionRepository = 
                 _regionRepository ?? 
                 new RegionRepository(_virbelaListingContext);
+            }
+        }
+
+        public IRepository<Region_Listing> Region_ListingRepository {
+            get { return _region_ListingRepository = 
+                _region_ListingRepository ?? 
+                new Region_ListingRepository(_virbelaListingContext);
             }
         }
 

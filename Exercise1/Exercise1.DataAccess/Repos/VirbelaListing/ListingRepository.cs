@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Exercise1.Common.Tasks;
 using Exercise1.Data.Models.VirbelaListing;
 using Exercise1.Data.Repos;
 using Exercise1.DataAccess.Context;
-using Exercise1.DataAccess.Repos.Extension;
 using System;
 
 namespace Exercise1.DataAccess.Repos.VirbelaListing

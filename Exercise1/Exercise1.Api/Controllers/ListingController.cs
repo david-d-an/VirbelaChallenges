@@ -30,9 +30,8 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet]
         [TokenAuthorize()]
-        // [AllowAnonymous]
         [ResponseCache(
-            Duration = 60,
+            Duration = 10,
             Location = ResponseCacheLocation.Client,
             NoStore = false)]
         public async Task<IActionResult> Get(
@@ -60,10 +59,6 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet("{id}")]
         [TokenAuthorize()]
-        [ResponseCache(
-            Duration = 60,
-            Location = ResponseCacheLocation.Client,
-            NoStore = false)]
         public async Task<IActionResult> Get(
             int id, 
             CancellationToken cancellationToken)
