@@ -12,19 +12,23 @@ using System;
 
 namespace Exercise1.Api.Controllers
 {
-    public class ListingControllerTest {
+    public class ListingControllerShould {
         private Mock<ILogger<ListingController>> mockLogger;
         private Mock<IUnitOfWork> mockUnitOfWork;
         private ListingController _controller;
         Mock<IRepository<Listing>> mockListingRepository;
+        private Mock<IRepository<Listinguser>> mockListinguserRepository;
+        private Mock<IRepository<Region_Listing>> mockRegion_ListingRepository;
         private Listinguser authenticatedUser;
         private CancellationToken cancellationToken;
 
-        public ListingControllerTest()
+        public ListingControllerShould()
         {
             mockLogger = new Mock<ILogger<ListingController>>();
             mockUnitOfWork = new Mock<IUnitOfWork>();
             mockListingRepository = new Mock<IRepository<Listing>>();
+            mockListinguserRepository = new Mock<IRepository<Listinguser>>();
+            mockRegion_ListingRepository = new Mock<IRepository<Region_Listing>>();
 
             authenticatedUser = new Listinguser {
                 Id = 1,
@@ -43,7 +47,7 @@ namespace Exercise1.Api.Controllers
         }
 
         [Fact]
-        public void ShouldDenyAnonymousUserViewingAll() {
+        public void DenyAnonymousUserViewingAll() {
             // Arrange
 
             // Act
@@ -66,7 +70,7 @@ namespace Exercise1.Api.Controllers
         }
 
         [Fact]
-        public void ShouldDenyAnonymousUserPosting() {
+        public void DenyAnonymousUserPosting() {
             // Arrange
 
             // Act
@@ -76,7 +80,7 @@ namespace Exercise1.Api.Controllers
         }
 
         [Fact]
-        public void ShouldDenyAnonymousUserEditing() {
+        public void DenyAnonymousUserEditing() {
             // Arrange
 
             // Act
@@ -85,105 +89,174 @@ namespace Exercise1.Api.Controllers
 
         }
 
+        // [Theory]
+        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 3)]
+        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 7)]
+        // public async void ShouldReturnAllOfOwn(int id,
+        //                                        string userid, 
+        //                                        string email,
+        //                                        string firstname,
+        //                                        string lastname,            
+        //                                        string password,
+        //                                        int regionId,
+        //                                        int listingCount) {
+        //     // Arrange
+        //     var user = new Listinguser {
+        //         Id = id,
+        //         Userid = userid,
+        //         Email = email,
+        //         Firstname = firstname,
+        //         Lastname = lastname,
+        //         Password = Util.HashPassword(password),
+        //         RegionId = regionId
+        //     };
+        //     _controller.ControllerContext = Util.GetControllerContext(user);
+
+        //     var tmpListingList = new List<Listing>(listingCount);
+        //     for (int i = 0; i < listingCount; i++)
+        //         tmpListingList.Add(new Listing());
+
+        //     mockListingRepository
+        //         .Setup(x => x.GetAsync(
+        //             It.Is<List<KeyValuePair<string, string>>>(x => 
+        //                 x.First(p => p.Key == "CreatorId").Value == user.Id.ToString()
+        //             ),
+        //             null,
+        //             null
+        //         ))
+        //         .ReturnsAsync(tmpListingList);
+        //     mockUnitOfWork
+        //         .Setup(uow => uow.ListingRepository)
+        //         .Returns(mockListingRepository.Object);
+
+        //     // Act
+        //     var result = await _controller.Get(
+        //         null, null, null, null, null, null, cancellationToken);
+
+        //     // Assert
+        //     var okResult = result as OkObjectResult;
+        //     Assert.NotNull(okResult);
+        //     Assert.Equal(200, okResult.StatusCode);
+
+        //     var valueResult = okResult.Value as IEnumerable<Listing>;
+        //     Assert.Equal(listingCount, valueResult.Count());
+        // }
+
+        // [Theory]
+        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5)]
+        // public async void ShouldReturnNoneIfNotOwningAny(int id,
+        //                                                  string userid, 
+        //                                                  string email,
+        //                                                  string firstname,
+        //                                                  string lastname,            
+        //                                                  string password,
+        //                                                  int regionId) {
+        //     // Arrange
+        //     var testingUser = new Listinguser {
+        //         Id = id,
+        //         Userid = userid,
+        //         Email = email,
+        //         Firstname = firstname,
+        //         Lastname = lastname,
+        //         Password = Util.HashPassword(password),
+        //         RegionId = regionId
+        //     };
+        //     _controller.ControllerContext = Util.GetControllerContext(testingUser);
+
+        //     mockListingRepository
+        //         .Setup(x => x.GetAsync(
+        //             It.Is<List<KeyValuePair<string, string>>>(x => 
+        //                 x.First(p => p.Key == "CreatorId").Value == testingUser.Id.ToString()
+        //             ),
+        //             null,
+        //             null
+        //         ))
+        //         .ReturnsAsync(new List<Listing>());
+        //     mockUnitOfWork
+        //         .Setup(uow => uow.ListingRepository)
+        //         .Returns(mockListingRepository.Object);
+
+        //     // Act
+        //     var result = await _controller.Get(
+        //         null, null, null, null, null, null, cancellationToken);
+
+        //     // Assert
+        //     var okResult = result as OkObjectResult;
+        //     Assert.NotNull(okResult);
+        //     Assert.Equal(200, okResult.StatusCode);
+
+        //     var valueResult = okResult.Value as IEnumerable<Listing>;
+        //     Assert.Empty(valueResult);
+        // }
 
         [Theory]
-        [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 3)]
-        [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 7)]
-        public async void ShouldReturnAllOfOwn(int id,
-                                               string userid, 
-                                               string email,
-                                               string firstname,
-                                               string lastname,            
-                                               string password,
-                                               int regionId,
-                                               int listingCount) {
+        [InlineData(2, 5)]
+        [InlineData(15, 50)]
+        [InlineData(15, 500)]
+        public async void ReturnAllInOwnRegionOnly(int regionCount, int listingCount) {
             // Arrange
-            var user = new Listinguser {
-                Id = id,
-                Userid = userid,
-                Email = email,
-                Firstname = firstname,
-                Lastname = lastname,
-                Password = Util.HashPassword(password),
-                RegionId = regionId
-            };
-            _controller.ControllerContext = Util.GetControllerContext(user);
+            _controller.ControllerContext = Util.GetControllerContext(authenticatedUser);
 
-            var tmpListingList = new List<Listing>(listingCount);
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+
+            var tmpRegion_ListingList = new List<Region_Listing>(listingCount);
             for (int i = 0; i < listingCount; i++)
-                tmpListingList.Add(new Listing());
+                tmpRegion_ListingList.Add(new Region_Listing{
+                    RegionId = random.Next(1, regionCount + 1)
+                });
 
-            mockListingRepository
+            int countSameRegion = tmpRegion_ListingList
+                                .Where(i => i.RegionId == authenticatedUser.RegionId)
+                                .Count();
+
+            mockListinguserRepository
                 .Setup(x => x.GetAsync(
-                    It.Is<List<KeyValuePair<string, string>>>(x => 
-                        x.First(p => p.Key == "CreatorId").Value == user.Id.ToString()
-                    ),
-                    null,
-                    null
+                    It.Is<string>(x => x == authenticatedUser.Id.ToString())
                 ))
-                .ReturnsAsync(tmpListingList);
+                .ReturnsAsync(authenticatedUser);
             mockUnitOfWork
                 .Setup(uow => uow.ListingRepository)
                 .Returns(mockListingRepository.Object);
 
+            mockRegion_ListingRepository
+                .Setup(x => x.GetAsync(
+                    It.Is<List<KeyValuePair<string, string>>>(x => 
+                        x.First(p => p.Key == "RegionId").Value == authenticatedUser.RegionId.ToString()
+                    ),
+                    null,
+                    null
+                ))
+                .ReturnsAsync(
+                    tmpRegion_ListingList
+                    .Where(i => i.RegionId == authenticatedUser.RegionId)
+                );
+            mockUnitOfWork
+                .Setup(uow => uow.Region_ListingRepository)
+                .Returns(mockRegion_ListingRepository.Object);
+
             // Act
             var result = await _controller.Get(
-                null, null, null, null, null, null, null, cancellationToken);
+                null, null, null, null, null, null, cancellationToken);
 
             // Assert
             var okResult = result as OkObjectResult;
             Assert.NotNull(okResult);
             Assert.Equal(200, okResult.StatusCode);
 
-            var valueResult = okResult.Value as IEnumerable<Listing>;
-            Assert.Equal(listingCount, valueResult.Count());
-        }
+            var valueResult = okResult.Value as IEnumerable<Region_Listing>;
+            // Count listings in user's region
+            int inRegionCount = valueResult
+                            .Where(i => i.RegionId == authenticatedUser.RegionId)
+                            .Count();
+            // Count listings notin user's region
+            int outRegionCount = valueResult
+                            .Where(i => i.RegionId != authenticatedUser.RegionId)
+                            .Count();
 
-        [Theory]
-        [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5)]
-        public async void ShouldReturnNoneIfNotOwningAny(int id,
-                                                         string userid, 
-                                                         string email,
-                                                         string firstname,
-                                                         string lastname,            
-                                                         string password,
-                                                         int regionId) {
-            // Arrange
-            var testingUser = new Listinguser {
-                Id = id,
-                Userid = userid,
-                Email = email,
-                Firstname = firstname,
-                Lastname = lastname,
-                Password = Util.HashPassword(password),
-                RegionId = regionId
-            };
-            _controller.ControllerContext = Util.GetControllerContext(testingUser);
-
-            mockListingRepository
-                .Setup(x => x.GetAsync(
-                    It.Is<List<KeyValuePair<string, string>>>(x => 
-                        x.First(p => p.Key == "CreatorId").Value == testingUser.Id.ToString()
-                    ),
-                    null,
-                    null
-                ))
-                .ReturnsAsync(new List<Listing>());
-            mockUnitOfWork
-                .Setup(uow => uow.ListingRepository)
-                .Returns(mockListingRepository.Object);
-
-            // Act
-            var result = await _controller.Get(
-                null, null, null, null, null, null, null, cancellationToken);
-
-            // Assert
-            var okResult = result as OkObjectResult;
-            Assert.NotNull(okResult);
-            Assert.Equal(200, okResult.StatusCode);
-
-            var valueResult = okResult.Value as IEnumerable<Listing>;
-            Assert.Empty(valueResult);
+            // Check if the initial in-region count matches the returned list.
+            Assert.Equal(countSameRegion, inRegionCount);
+            // Check if out-of-region count is 0.
+            Assert.Equal(0, outRegionCount);
         }
 
         [Theory]

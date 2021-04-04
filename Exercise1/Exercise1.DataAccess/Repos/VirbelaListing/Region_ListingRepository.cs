@@ -55,6 +55,9 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
                     && int.TryParse(kv.Value, out int regionId)) {
                         query = query.Where(i => i.RegionId == regionId);
                     }
+                    else if (kv.Key == "RegionName") {
+                        query = query.Where(i => i.RegionName == kv.Value);
+                    }
                     else if (kv.Key == "Title") {
                         query = query.Where(i => i.Title == kv.Value);
                     }

@@ -177,11 +177,12 @@ Please use the credentials in the previous section to access the database via yo
 
 ### 1. Listinguser
 
-| Id  | UserId |  Email              | Password   | Region |
-| :-: | ------ | ------------------- | :--------: | :----: |
-|  1  | jsmith | jsmith@contoso.com  | test       |   1    |
-|  2  | jdoe   | jdoe@contoso.com    | test       |   3    |
-|  3  | lmessi | lmessi@contoso.com  | test       |   4    |
+| Id  |  UserId  |  Email                | Password   | Region |
+| :-: | -------- | --------------------- | :--------: | :----: |
+|  1  | jsmith   | jsmith@contoso.com    | test       |   1    |
+|  2  | jdoe     | jdoe@contoso.com      | test       |   3    |
+|  3  | lmessi   | lmessi@contoso.com    | test       |   4    |
+|  4  | maradona | maradona@contoso.com  | test       |   1    |
 
 <br>
 
@@ -216,6 +217,8 @@ Please use the credentials in the previous section to access the database via yo
 |  3  | Listing C | Descripion for Listing C... |  32.45 |     2      | 2021-03-11 15:42:59 |
 |  4  | Listing D | Descripion for Listing D... | 455.56 |     2      | 2021-02-08 14:21:46 |
 |  5  | Listing E | Descripion for Listing E... | 556.99 |     3      | 2021-02-27 18:19:19 |
+|  6  | Listing F | Descripion for Listing F... | 498.99 |     4      | 2021-04-01 19:43:58 |
+|  7  | Listing G | Descripion for Listing G... | 124.99 |     4      | 2021-03-31 08:22:38 |
 
 <br>
 

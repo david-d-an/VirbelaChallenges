@@ -75,7 +75,8 @@ namespace Exercise1.DataAccess.Context
                     .HasName("IX_userid")
                     .IsUnique();
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Firstname)
                     .HasColumnName("firstname")
@@ -93,7 +94,8 @@ namespace Exercise1.DataAccess.Context
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RegionId).HasColumnName("region_id");
+                entity.Property(e => e.RegionId)
+                    .HasColumnName("region_id");
 
                 entity.Property(e => e.Userid)
                     .IsRequired()
@@ -103,7 +105,7 @@ namespace Exercise1.DataAccess.Context
 
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasColumnName("email")
+                    .HasColumnName("Email")
                     .HasMaxLength(30)
                     .IsUnicode(false);
 

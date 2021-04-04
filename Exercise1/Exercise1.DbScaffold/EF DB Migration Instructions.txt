@@ -1,23 +1,41 @@
 Steps to Migrate VirbelaListing Database
 
 1. Get current models
+This step is needed at the beginning phase. Once the initial model/context is is obtained, it's normally not necessary 
+to get them again. It's recommeneded to modify in the Models folder and run from Step 2 to perform patch updates.
 > dotnet ef dbcontext scaffold "Server=tcp:virbelalisting.database.windows.net,1433;Initial Catalog=VirbelaListing;Persist Security Info=False;User ID=appuser;Password=virbela1234!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;" Microsoft.EntityFrameworkCore.SqlServer -o Models/VirbelaListing -f
 
-2. Update connection string in Scaffold project
-"Server=tcp:virbelalisting.database.windows.net,1433;Initial Catalog=VirbelaListing;Persist Security Info=False;User ID=appuser;Password=virbela1234!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;"
+2. Update connection string in OnConfiguring() of VirbelaListingContext.cs file depending on which environment you are patching up.
+
+    Development
+      Plint text
+      "Server=tcp:virbelalisting.database.windows.net,1433;Initial Catalog=VirbelaListingDev;Persist Security Info=False;User ID=appuser;Password={your password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;"
+      Encrypted
+      "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpxmNDCVRydZ5efJTTL2O9FkiOGrbqlILlQPt5/8DcwssjosrrVeyxXrgIHB7pIN48IPOLp29HxT67vWGovw4jt+QtegcVynARe8g9XbGU6dB57kDogQ5t33I5iovM52B1o8tzRuYekLE/std6JtXC7McwscfvTKSE+85Woq7ljaLP6k5pRx83QaMvCe6Y7ICdAc5oKTzODrVpEZ+ae3uhaR"
+   
+    Staging
+      Plint text
+      "Server=tcp:virbelalisting.database.windows.net,1433;Initial Catalog=VirbelaListing;Persist Security Info=False;User ID=appuser;Password={your password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;"
+      Encrypted
+      "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpyZwH81uC883tyfXS2caR6rk0fTN1u/+dg05+L7sfLuDe8becDugt35NR2ahQEXCdVmHOs4JRAwWqvkL0EcqVVmwP4g1zUdfvg4yhzOtXVLmrf+xJFG6CFlCRw91hgUTCk5A6a2uPYHpKKiW7U0/cTZ6i9vKFqFJMvXxzRKU2hu3aMJ1iZsWgF3AR1jSwEOHQg="
 
 3. Run db migration
+This step will build DB migration scripts in C# format. The actual migration doesn't happen until Step 4 and 5 are complete.
+Since this only auto create CS files, it's not affected by the selection of connection string specified in Step 2.
 > dotnet ef migrations add {migrationname} -o Migrations/VirbelaListing --context VirbelaListingContext
-# migrationname example: InitDb for first run, UpdateDb_1 for subsequent runs, etc
 
-dotnet ef migrations add UpdateDb_3 -o Migrations/VirbelaListing --context VirbelaListingContext
+# Example for migrationname: InitDb for first run, UpdateDb_1 for subsequent runs, etc
+# Example: dotnet ef migrations add UpdateDb_7 -o Migrations/VirbelaListing --context VirbelaListingContext
 
 4. Adjust migration code
-Comment out anything realted to __efmigrationshistory if this causes Table already exists exception.
+It's normally not necessary. However, you will have to comment out anything realted to __efmigrationshistory 
+if this causes Table already exists exception.
 
 5. Drop db for fresh migration
+The result is reflected onto the database specified by the connection string you selected from Step 2.
 > dotnet ef database drop --context VirbelaListingContext
 
 6. Run db update
+The result is reflected onto the database specified by the connection string you selected from Step 2.
 > dotnet ef database update --context VirbelaListingContext
 
