@@ -83,6 +83,8 @@ namespace Exercise1.Api.Controllers
             int idNum;
             if (!int.TryParse(id, out idNum))
                 return BadRequest();
+            else if (idNum != listingUpdateRequest.Id)
+                return BadRequest();
 
             var user = (Listinguser)HttpContext.Items["User"];
             try {
@@ -130,8 +132,22 @@ namespace Exercise1.Api.Controllers
             int id, 
             CancellationToken cancellationToken)
         {
-            _logger.LogWarning("ListingController.Delete has not been implemented.");
-            return await TaskConstants<IActionResult>.NotImplemented;
+            var user = (Listinguser)HttpContext.Items["User"];
+            try {
+                Listing listing = await _unitOfWork.ListingRepository
+                                        .GetAsync(id.ToString());
+                if (listing == null || listing.CreatorId != user.Id)
+                    return Unauthorized();
+ 
+                Listing deletedListing = await _unitOfWork.ListingRepository
+                                        .DeleteAsync(id.ToString());
+                _unitOfWork.Commit();
+                return Ok(deletedListing);
+            } catch(Exception ex) {
+                _logger.LogError(ex, ex.Message);
+                _unitOfWork.Rollback();
+                return BadRequest();
+            }
         }
     }
 }

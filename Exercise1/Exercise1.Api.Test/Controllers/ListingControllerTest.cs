@@ -378,5 +378,86 @@ namespace Exercise1.Api.Controllers
             Assert.Equal(newListing.CreatedDate, valueResult.CreatedDate);
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void ShouldDeleteIfOwning(int id) {
+            _controller.ControllerContext = 
+                Helper.GetControllerContext(authenticatedUser);
+
+            var listingToDelete = new Listing {
+                    Id = id,
+                    Title = "Delete Title",
+                    Description = "Delete This",
+                    Price = new Random().Next(1, 10),
+                    CreatorId = authenticatedUser.Id,
+                    CreatedDate = DateTime.Now
+                };
+
+            mockListingRepository
+                .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
+                .ReturnsAsync(listingToDelete);
+
+            mockListingRepository
+                .Setup(x => x.DeleteAsync(It.Is<string>(x => x == id.ToString())))
+                .ReturnsAsync(listingToDelete);
+
+            mockUnitOfWork
+                .Setup(uow => uow.ListingRepository)
+                .Returns(mockListingRepository.Object);
+
+            // Act
+            var result = await _controller.Delete(id, cancellationToken);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.NotNull(okResult);
+            Assert.Equal(200, okResult.StatusCode);
+
+            var valueResult = okResult.Value as Listing;
+            Assert.Equal(listingToDelete.Id,  valueResult.Id);
+            Assert.Equal(listingToDelete.Title,  valueResult.Title);
+            Assert.Equal(listingToDelete.Description,  valueResult.Description);
+            Assert.Equal(listingToDelete.Price,  valueResult.Price);
+            Assert.Equal(listingToDelete.CreatorId,  valueResult.CreatorId);
+            Assert.Equal(listingToDelete.CreatedDate,  valueResult.CreatedDate);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        public async void ShouldNotDeleteIfNotOwning(int id) {
+            _controller.ControllerContext = 
+                Helper.GetControllerContext(authenticatedUser);
+
+            var listingToDelete = new Listing {
+                    Id = id,
+                    Title = "Don't Delete",
+                    Description = "Delete This Not",
+                    Price = new Random().Next(1, 10),
+                    CreatorId = authenticatedUser.Id + 1,
+                    CreatedDate = DateTime.Now
+                };
+
+            mockListingRepository
+                .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
+                .ReturnsAsync(listingToDelete);
+
+            mockListingRepository
+                .Setup(x => x.DeleteAsync(It.Is<string>(x => x == id.ToString())))
+                .ReturnsAsync(listingToDelete);
+
+            mockUnitOfWork
+                .Setup(uow => uow.ListingRepository)
+                .Returns(mockListingRepository.Object);
+
+            // Act
+            var result = await _controller.Delete(id, cancellationToken);
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+            Assert.Equal(401, (result as UnauthorizedResult).StatusCode);
+        }
+
     }
 }

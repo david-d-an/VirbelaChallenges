@@ -103,7 +103,10 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
 
         public async Task<Listing> DeleteAsync(string id)
         {
-            return await TaskConstants<Listing>.NotImplemented;
+            var deletedListing = await _context.Listing.FindAsync(int.Parse(id));
+            _context.Listing.Remove(deletedListing);
+            // _context.Entry(deletedListing).State = EntityState.Deleted;
+            return deletedListing;
         }
 
     }
