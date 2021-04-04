@@ -15,9 +15,16 @@ namespace Exercise1.DataAccess.Repos
 
         public ListingRepositoryShould()
         {
-            // ConnString for Dev Environment
+            // Development Setting
+            // Server=tcp:virbelalisting.database.windows.net,1433;
+            // Initial Catalog=VirbelaListingDev;
+            // Persist Security Info=False;
+            // User ID=appuser;
+            // Password={password};
+            // MultipleActiveResultSets=False;
+            // Encrypt=True;TrustServerCertificate=False;
             string encConnStr = 
-                "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpyZwH81uC883tyfXS2caR6rk0fTN1u/+dg05+L7sfLuDe8becDugt35NR2ahQEXCdVmHOs4JRAwWqvkL0EcqVVmwP4g1zUdfvg4yhzOtXVLmrf+xJFG6CFlCRw91hgUTCk5A6a2uPYHpKKiW7U0/cTZ6i9vKFqFJMvXxzRKU2hu3aMJ1iZsWgF3AR1jSwEOHQg=";
+                "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpxmNDCVRydZ5efJTTL2O9FkiOGrbqlILlQPt5/8DcwssjosrrVeyxXrgIHB7pIN48IPOLp29HxT67vWGovw4jt+QtegcVynARe8g9XbGU6dB57kDogQ5t33I5iovM52B1o8tzRuYekLE/std6JtXC7McwscfvTKSE+85Woq7ljaLP6k5pRx83QaMvCe6Y7ICdAc5oKTzODrVpEZ+ae3uhaR";
             connStr = AesCryptoUtil.Decrypt(encConnStr);
             dbOptionsbuilder = new DbContextOptionsBuilder<VirbelaListingContext>()
                                 .UseSqlServer(connStr);
@@ -57,6 +64,10 @@ namespace Exercise1.DataAccess.Repos
             }
         }
 
+        /* This test interacts with database.                            */
+        /* Therere, it's susceptible to failure in case of data changes. */
+        /* It's best to keep this test inactive immediatel after         */
+        /* the test passes.                                              */
         [Fact]
         public async void ReturnListingForValidId()
         {
@@ -70,6 +81,10 @@ namespace Exercise1.DataAccess.Repos
             }
         }
 
+        /* This test interacts with database.                            */
+        /* Therere, it's susceptible to failure in case of data changes. */
+        /* It's best to keep this test inactive immediatel after         */
+        /* the test passes.                                              */
         [Fact]
         public async void ReturnListingForValidParameters()
         {

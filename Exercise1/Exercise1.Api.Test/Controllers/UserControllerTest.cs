@@ -10,7 +10,7 @@ using Exercise1.Api.Authentication.Provider;
 using Microsoft.Extensions.Configuration;
 using Exercise1.Data.Models.Authentication;
 using Exercise1.Api.Authentication;
-using Exercise1.Api.Test.Helper;
+using Exercise1.Api.Common;
 using System.Threading;
 
 namespace Exercise1.Api.Controllers
@@ -27,7 +27,7 @@ namespace Exercise1.Api.Controllers
         public UserControllerShould()
         {
             mockLogger = new Mock<ILogger<UserController>>();
-            mockConfiguration = Helper.GetConfiguration();
+            mockConfiguration = Util.GetConfiguration();
             mockUnitOfWork = new Mock<IUnitOfWork>();
             mockListinguserRepository = new Mock<IRepository<Listinguser>>();
             userService = new UserService(mockConfiguration, mockUnitOfWork.Object);
@@ -67,7 +67,7 @@ namespace Exercise1.Api.Controllers
                 Email = email,
                 Firstname = firstname,
                 Lastname = lastname,
-                Password = Helper.HashPassword(password),
+                Password = Util.HashPassword(password),
                 RegionId = regionId
             };
 
@@ -129,7 +129,7 @@ namespace Exercise1.Api.Controllers
                 Email = email,
                 Firstname = firstname,
                 Lastname = lastname,
-                Password = Helper.HashPassword(password),
+                Password = Util.HashPassword(password),
                 RegionId = regionId
             };
 
@@ -179,7 +179,7 @@ namespace Exercise1.Api.Controllers
                 Email = email,
                 Firstname = firstname,
                 Lastname = lastname,
-                Password = Helper.HashPassword(password),
+                Password = Util.HashPassword(password),
                 RegionId = regionId
             };
 

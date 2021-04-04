@@ -7,10 +7,8 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Exercise1.Api.Test.Helper;
-using Microsoft.Extensions.Configuration;
+using Exercise1.Api.Common;
 using System;
-using Exercise1.Api.Authentication;
 
 namespace Exercise1.Api.Controllers
 {
@@ -34,7 +32,7 @@ namespace Exercise1.Api.Controllers
                 Email = "jsmith@example.com",
                 Firstname = "John",
                 Lastname = "Smith",
-                Password = Helper.HashPassword("test1"),
+                Password = Util.HashPassword("test1"),
                 RegionId = 5
             };
             cancellationToken = new CancellationToken();
@@ -106,10 +104,10 @@ namespace Exercise1.Api.Controllers
                 Email = email,
                 Firstname = firstname,
                 Lastname = lastname,
-                Password = Helper.HashPassword(password),
+                Password = Util.HashPassword(password),
                 RegionId = regionId
             };
-            _controller.ControllerContext = Helper.GetControllerContext(user);
+            _controller.ControllerContext = Util.GetControllerContext(user);
 
             var tmpListingList = new List<Listing>(listingCount);
             for (int i = 0; i < listingCount; i++)
@@ -157,10 +155,10 @@ namespace Exercise1.Api.Controllers
                 Email = email,
                 Firstname = firstname,
                 Lastname = lastname,
-                Password = Helper.HashPassword(password),
+                Password = Util.HashPassword(password),
                 RegionId = regionId
             };
-            _controller.ControllerContext = Helper.GetControllerContext(testingUser);
+            _controller.ControllerContext = Util.GetControllerContext(testingUser);
 
             mockListingRepository
                 .Setup(x => x.GetAsync(
@@ -203,7 +201,7 @@ namespace Exercise1.Api.Controllers
                                                       string createdDate) {
             // Arrange
             _controller.ControllerContext = 
-                Helper.GetControllerContext(authenticatedUser);
+                Util.GetControllerContext(authenticatedUser);
 
             var updatedListing = new Listing {
                 Id = id,
@@ -273,7 +271,7 @@ namespace Exercise1.Api.Controllers
                                                       string createdDate) {
             // Arrange
             _controller.ControllerContext = 
-                Helper.GetControllerContext(authenticatedUser);
+                Util.GetControllerContext(authenticatedUser);
 
             var updatedListing = new Listing {
                 Id = id,
@@ -329,7 +327,7 @@ namespace Exercise1.Api.Controllers
             // Arrange
             DateTime createdDate = DateTime.Now;
             _controller.ControllerContext = 
-                Helper.GetControllerContext(authenticatedUser);
+                Util.GetControllerContext(authenticatedUser);
 
             var newListing = new Listing {
                 Id = 0,
@@ -383,7 +381,7 @@ namespace Exercise1.Api.Controllers
         [InlineData(2)]
         public async void ShouldDeleteIfOwning(int id) {
             _controller.ControllerContext = 
-                Helper.GetControllerContext(authenticatedUser);
+                Util.GetControllerContext(authenticatedUser);
 
             var listingToDelete = new Listing {
                     Id = id,
@@ -428,7 +426,7 @@ namespace Exercise1.Api.Controllers
         [InlineData(2)]
         public async void ShouldNotDeleteIfNotOwning(int id) {
             _controller.ControllerContext = 
-                Helper.GetControllerContext(authenticatedUser);
+                Util.GetControllerContext(authenticatedUser);
 
             var listingToDelete = new Listing {
                     Id = id,

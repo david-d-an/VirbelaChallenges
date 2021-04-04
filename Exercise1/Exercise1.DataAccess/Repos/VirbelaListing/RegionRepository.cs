@@ -39,6 +39,7 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
                 }
             }
 
+            // Repository returns paged data if pageNum and pageSize are provided
             if ((pageNum??0) >  0 && (pageSize??0) > 0) {
                 query = query
                     .Skip((pageNum.Value - 1) * pageSize.Value)

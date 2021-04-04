@@ -118,6 +118,10 @@ namespace Exercise1.DataAccess.Context
             {
                 entity.ToTable("region");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("IX_name")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Name)

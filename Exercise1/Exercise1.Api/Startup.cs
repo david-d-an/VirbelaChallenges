@@ -30,14 +30,13 @@ namespace Exercise1.Api
 
         public IConfiguration Configuration { get; }
 
-        
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
             this.securitySettings = ApiConfig.GetSecuritySettings(Configuration);
 
+            // This is where CORS is set up, in case Web App connection is needed.
             services.AddCors(options => {
                 options.AddPolicy(name: Exercise1WebOrigins, builder => {
                     builder
@@ -52,6 +51,8 @@ namespace Exercise1.Api
 
             services.AddResponseCaching();
 
+            // I set up two databaes for DEV and Staging, see appsetting.{env_name}.json
+            // to get environment specific connection strings.
             var encConnStrVirbelaListing = Configuration.GetConnectionString("VirbelaListing(Azure)");
             var connStrVirbelaListing = AesCryptoUtil.Decrypt(encConnStrVirbelaListing);
             services.AddDbContext<VirbelaListingContext>(builder =>                   
@@ -59,9 +60,7 @@ namespace Exercise1.Api
             );
             EnsureDatabaseExists<VirbelaListingContext>(connStrVirbelaListing);
 
-            // services.AddTransient<IRepository<Region>, RegionRepository>();
-            // services.AddTransient<IRepository<Listing>, ListingRepository>();
-            // services.AddTransient<IRepository<Listinguser>, ListinguserRepository>();
+            // UnitOfWork is injected and all repoistory injections are removed.
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             // configure DI for application services
@@ -71,6 +70,9 @@ namespace Exercise1.Api
         private static void EnsureDatabaseExists<T>(string connectionString) 
         where T : DbContext, new()
         {
+            /* Generic function that can work with severl different */ 
+            /* Database type. Since I use SQL Database only, the    */
+            /* rest is commented out.                               */
             var builder = new DbContextOptionsBuilder<T>();
             if (typeof(T) == typeof(VirbelaListingContext)) {
                 builder.UseSqlServer(connectionString);
@@ -94,6 +96,9 @@ namespace Exercise1.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            // General security settings are printed in the log file during app start up.
+            // This output will be very helpful during deployment in case environmental variable
+            // troubles you.
             foreach (var s in securitySettings.AllowedCorsOrigins) {
                 logger.LogInformation(string.Format("{0}: {1}", "AllowedCorsOrigins", s));
             }
@@ -118,10 +123,10 @@ namespace Exercise1.Api
             // app.UseAuthentication();
             // app.UseAuthorization();
 
+            // Enable response cache
             app.UseResponseCaching();
             
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
         }

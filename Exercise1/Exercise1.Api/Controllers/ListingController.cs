@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using Exercise1.Api.Authentication;
-using Exercise1.Common.Tasks;
 
 namespace Exercise1.Api.Controllers
 {
@@ -30,9 +29,9 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet]
         [TokenAuthorize()]
-        // [AllowAnonymous]
+        /*  Use cache to repeat request within short time */
         [ResponseCache(
-            Duration = 60,
+            Duration = 10,
             Location = ResponseCacheLocation.Client,
             NoStore = false)]
         public async Task<IActionResult> Get(
@@ -53,6 +52,7 @@ namespace Exercise1.Api.Controllers
                 new KeyValuePair<string, string> ("Price", price )
             };
 
+            // Repository returns paged data if pageNum and pageSize are provided
             var listings = await _unitOfWork.ListingRepository
                                 .GetAsync(parameters, pageNum, pageSize);
             return Ok(listings);
@@ -60,10 +60,6 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet("{id}")]
         [TokenAuthorize()]
-        [ResponseCache(
-            Duration = 60,
-            Location = ResponseCacheLocation.Client,
-            NoStore = false)]
         public async Task<IActionResult> Get(
             int id, 
             CancellationToken cancellationToken)
