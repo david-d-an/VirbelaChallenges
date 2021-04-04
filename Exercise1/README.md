@@ -227,14 +227,14 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
 The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
 
 * User Management
-    * Registration: https://execise1api6921.scm.azurewebsites.net/api/User/Register (POST)
-    * Login: https://execise1api6921.scm.azurewebsites.net/api/User/Login (POST)
+    * Registration: https://execise1api6921.azurewebsites.net/api/User/Register (POST)
+    * Login: https://execise1api6921.azurewebsites.net/api/User/Login (POST)
 * Listing Management
-    * View All: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (GET)
-    * Find: https://execise1api6921.scm.azurewebsites.net/api/User/Listing/{id} (GET)
-    * Update: https://execise1api6921.scm.azurewebsites.net/api/User/Listing/{id} (PUT)
-    * Create: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (POST)
-    * Delete: https://execise1api6921.scm.azurewebsites.net0/api/User/Listing/1 (DELETE)
+    * View All: https://execise1api6921.azurewebsites.net/api/User/Listing (GET)
+    * Find: https://execise1api6921.azurewebsites.net/api/User/Listing/{id} (GET)
+    * Update: https://execise1api6921.azurewebsites.net/api/User/Listing/{id} (PUT)
+    * Create: https://execise1api6921.azurewebsites.net/api/User/Listing (POST)
+    * Delete: https://execise1api6921.azurewebsites.net/api/User/Listing/1 (DELETE)
 
 <br><br>
 
@@ -335,5 +335,38 @@ Please use the credentials in the previous section to access the database via yo
 * Created_Date: DateTime
 
 <br>
+
+> # Deployment
+The API application is currently deployed on Azure as Staging for testing.
+See below for server details:
+
+> * Application: <br>
+>   * Url: https://execise1api6921.azurewebsites.net <br>
+>   * OS: Debian Version 10 <br>
+> * Database: <br>
+>   * Type: SQL Database <br>
+>   * Server: virbelalisting.database.windows.net <br>
+>   * Database: VirbelaListing <br>
+
+<br>
+
+## Applicaiton Deployment
+The application is deployed by GitHub action. The script is located at:
+> *{Exercise1 Root}*/.github/workflows/staging_execise1api6921.yml <br>
+The script will be activated to deploy the application onto Azure App Service if the code is pushed from IDE or Pull Request.
+
+<br>
+
+## Database Deployment
+Database structure is deployed by **Scaffolding service of Entity Framework Core**. <br>
+Database migration instructions are provide at: <br>
+
+> *{Exercise1 Root}*/Exercise1.DbScaffold/EF DB Migration Instructions.txt <br>
+
+Currently, **Exercise1.DbScaffold** project is set up to seed database with a basic dataset.
+The content of data seed was explined the previous section.
+Although the seeding is convenient, the seeding should be working only during the inital set-up of the database and is not meant to migrate large set of data.
+
+
 
 
