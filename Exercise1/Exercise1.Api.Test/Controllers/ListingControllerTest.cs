@@ -193,9 +193,11 @@ namespace Exercise1.Api.Controllers
         [InlineData(2, 5)]
         [InlineData(15, 50)]
         [InlineData(15, 500)]
-        public async void ReturnAllInOwnRegionOnly(int regionCount, int listingCount) {
+        public async void ReturnAllInOwnRegionOnly(
+            int regionCount, int listingCount) {
             // Arrange
-            _controller.ControllerContext = Util.GetControllerContext(authenticatedUser);
+            _controller.ControllerContext = 
+                Util.GetControllerContext(authenticatedUser);
 
             Random random = new Random(Guid.NewGuid().GetHashCode());
 
@@ -205,9 +207,10 @@ namespace Exercise1.Api.Controllers
                     RegionId = random.Next(1, regionCount + 1)
                 });
 
-            int countSameRegion = tmpRegion_ListingList
-                                .Where(i => i.RegionId == authenticatedUser.RegionId)
-                                .Count();
+            int countSameRegion = 
+                tmpRegion_ListingList
+                .Where(i => i.RegionId == authenticatedUser.RegionId)
+                .Count();
 
             mockListinguserRepository
                 .Setup(x => x.GetAsync(
@@ -221,7 +224,8 @@ namespace Exercise1.Api.Controllers
             mockRegion_ListingRepository
                 .Setup(x => x.GetAsync(
                     It.Is<List<KeyValuePair<string, string>>>(x => 
-                        x.First(p => p.Key == "RegionId").Value == authenticatedUser.RegionId.ToString()
+                        x.First(p => p.Key == "RegionId")
+                        .Value == authenticatedUser.RegionId.ToString()
                     ),
                     null,
                     null
@@ -257,6 +261,75 @@ namespace Exercise1.Api.Controllers
             Assert.Equal(countSameRegion, inRegionCount);
             // Check if out-of-region count is 0.
             Assert.Equal(0, outRegionCount);
+        }
+
+        [Theory]
+        [InlineData(2, 5)]
+        [InlineData(15, 50)]
+        [InlineData(15, 500)]
+        public async void ReturnListingInOwnRegionOnly(
+            int regionCount, int listingCount) {
+            // Arrange
+            _controller.ControllerContext = 
+                Util.GetControllerContext(authenticatedUser);
+
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+
+            var tmpRegion_ListingList = new List<Region_Listing>(listingCount);
+            for (int i = 0; i < listingCount; i++)
+                tmpRegion_ListingList.Add(new Region_Listing{
+                    Id = i + 1,
+                    RegionId = random.Next(1, regionCount + 1)
+                });
+
+            var listingSameRegion = 
+                tmpRegion_ListingList
+                .Where(i => i.RegionId == authenticatedUser.RegionId);
+
+            mockListinguserRepository
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(x => x == authenticatedUser.Id.ToString())
+                ))
+                .ReturnsAsync(authenticatedUser);
+            mockUnitOfWork
+                .Setup(uow => uow.ListingRepository)
+                .Returns(mockListingRepository.Object);
+
+
+            foreach(var r in tmpRegion_ListingList) {
+                mockRegion_ListingRepository
+                    .Setup(x => x.GetAsync(
+                        It.Is<string>(x => x == r.Id.ToString())
+                    ))
+                    .ReturnsAsync(
+                        tmpRegion_ListingList
+                        .Where(i => i.Id == r.Id)
+                        .FirstOrDefault()
+                    );
+            }
+            mockUnitOfWork
+                .Setup(uow => uow.Region_ListingRepository)
+                .Returns(mockRegion_ListingRepository.Object);
+
+            foreach(var r in tmpRegion_ListingList) {
+                // Act
+                var result = await _controller.Get(r.Id, cancellationToken);
+                Assert.IsType<OkObjectResult>(result);
+                var okResult = result as OkObjectResult;
+                Assert.NotNull(okResult);
+                Assert.Equal(200, okResult.StatusCode);
+
+                var valueResult = okResult.Value as Region_Listing;
+                // Assert
+                if (r.RegionId == authenticatedUser.RegionId) {
+                    Assert.NotNull(valueResult);
+                    Assert.Equal(r.Id, valueResult.Id);
+                    Assert.Equal(r.RegionId, valueResult.RegionId);
+                }
+                else {
+                    Assert.Null(valueResult);
+                }
+            }
         }
 
         [Theory]
@@ -466,11 +539,15 @@ namespace Exercise1.Api.Controllers
                 };
 
             mockListingRepository
-                .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(x => x == id.ToString()))
+                )
                 .ReturnsAsync(listingToDelete);
 
             mockListingRepository
-                .Setup(x => x.DeleteAsync(It.Is<string>(x => x == id.ToString())))
+                .Setup(x => x.DeleteAsync(
+                    It.Is<string>(x => x == id.ToString()))
+                )
                 .ReturnsAsync(listingToDelete);
 
             mockUnitOfWork
@@ -486,12 +563,12 @@ namespace Exercise1.Api.Controllers
             Assert.Equal(200, okResult.StatusCode);
 
             var valueResult = okResult.Value as Listing;
-            Assert.Equal(listingToDelete.Id,  valueResult.Id);
-            Assert.Equal(listingToDelete.Title,  valueResult.Title);
-            Assert.Equal(listingToDelete.Description,  valueResult.Description);
-            Assert.Equal(listingToDelete.Price,  valueResult.Price);
-            Assert.Equal(listingToDelete.CreatorId,  valueResult.CreatorId);
-            Assert.Equal(listingToDelete.CreatedDate,  valueResult.CreatedDate);
+            Assert.Equal(listingToDelete.Id, valueResult.Id);
+            Assert.Equal(listingToDelete.Title, valueResult.Title);
+            Assert.Equal(listingToDelete.Description, valueResult.Description);
+            Assert.Equal(listingToDelete.Price, valueResult.Price);
+            Assert.Equal(listingToDelete.CreatorId, valueResult.CreatorId);
+            Assert.Equal(listingToDelete.CreatedDate, valueResult.CreatedDate);
         }
 
         [Theory]
@@ -511,11 +588,15 @@ namespace Exercise1.Api.Controllers
                 };
 
             mockListingRepository
-                .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(x => x == id.ToString()))
+                )
                 .ReturnsAsync(listingToDelete);
 
             mockListingRepository
-                .Setup(x => x.DeleteAsync(It.Is<string>(x => x == id.ToString())))
+                .Setup(x => x.DeleteAsync(
+                    It.Is<string>(x => x == id.ToString()))
+                )
                 .ReturnsAsync(listingToDelete);
 
             mockUnitOfWork
