@@ -52,7 +52,7 @@ If the port is already occupied, declare another point inside **launchSetings.js
 
 > # Functionalities in API Application
 This chapter will explain the types of services and usage instructions.
-A terminology **ApiRoot** is used in the chapter to denote the root location of all of the API services.<br>
+The terminology **ApiRoot** is used in the chapter to denote the root location of all of the API services.<br>
 Please see the chapter **API Endpoints** to get the details
 
 ## Authentication
@@ -76,8 +76,8 @@ Upon successufl authentication, the server will respond with a response body in 
 }
 ```
 
-The *token* is a string type, a self contained Jason Web Token and must be attached if the API service requires authentication to prevent **HTTP 401 Unauthorized** response.<br>
-To verfiy the contents of the token, you can use one of the online tools such as https://jwt.io/.
+The *token* is a string type, a self-contained Jason Web Token, and must be attached if the API service requires authentication to prevent **HTTP 401 Unauthorized** response.<br>
+To verify the contents of the token, you can use one of the online tools such as https://jwt.io/.
 
 <br>
 
@@ -152,7 +152,7 @@ Users can edit any listing created by himself/herself.<br>
 
 * Request Type: PUT
 * Service Url: **{ApiRoot}**/Listing/{id}
-* Input Parameters: (attahced as body)
+* Input Parameters: (attached as body)
     * Id: Int, Primary key of Listing, must match {id} in Service Url.
     * Title: String, Title of Listing
     * Description: String, Description of Listing
@@ -166,14 +166,14 @@ Users can edit any listing created by himself/herself.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
-* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and wil return HTTP 401 Unauthorized response. 
+* Note: If the access token's User Id is different from the Id of the request, the server denies the request and will return HTTP 401 Unauthorized response. 
 
 ### 4. Create Listing
 Users can create any listing.<br>
 
 * Request Type: POST
 * Service Url: **{ApiRoot}**/Listing
-* Input Parameters: (attahced as body)
+* Input Parameters: (attached as body)
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
     * Description: String, Description of Listing
@@ -201,14 +201,14 @@ Users can delete any listing created by himself/herself.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
-* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
+* Note: If the access token's User Id is different from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
 
 <br><br>
 
 > # API Endpoints
-In this article, the common HTTPS address to access the API services will be called **Endpoint** and the url to the service domain as **ApiRoot**. The endpoint typically is in  a format similar to https://contoso.com/api/ResourceName. To activate a particular API service, a request of a specific request type (GET/PUT/POST/DELETE, etc.) must be sent to the correct endpoint with a request body or a query string if necessary. Please see the next chapter *Functionalities* for request details.
+In this article, the common HTTPS address to access the API services will be called **Endpoint** and the url to the service domain is **ApiRoot**. The endpoint typically is in  a format similar to https://contoso.com/api/ResourceName. To activate a particular API service, a request of a specific request type (GET/PUT/POST/DELETE, etc.) must be sent to the correct endpoint with a request body or a query string if necessary. Please see the next chapter *Functionalities* for request details.
 
-Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find **API Endpoints** for *Developemnt* and *Staging* environments.
+Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find **API Endpoints** for *Development* and *Staging* environments.
 
 ## Local (Development)
 The API runs off of port 15000 over TLS by default (i.e., https://localhost:15000/api). Some of the most popular HTTP request addresses are as follows:
@@ -227,14 +227,14 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
 The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
 
 * User Management
-    * Registration: https://execise1api6921.scm.azurewebsites.net/api/User/Register (POST)
-    * Login: https://execise1api6921.scm.azurewebsites.net/api/User/Login (POST)
+    * Registration: https://execise1api6921.azurewebsites.net/api/User/Register (POST)
+    * Login: https://execise1api6921.azurewebsites.net/api/User/Login (POST)
 * Listing Management
-    * View All: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (GET)
-    * Find: https://execise1api6921.scm.azurewebsites.net/api/User/Listing/{id} (GET)
-    * Update: https://execise1api6921.scm.azurewebsites.net/api/User/Listing/{id} (PUT)
-    * Create: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (POST)
-    * Delete: https://execise1api6921.scm.azurewebsites.net0/api/User/Listing/1 (DELETE)
+    * View All: https://execise1api6921.azurewebsites.net/api/User/Listing (GET)
+    * Find: https://execise1api6921.azurewebsites.net/api/User/Listing/{id} (GET)
+    * Update: https://execise1api6921.azurewebsites.net/api/User/Listing/{id} (PUT)
+    * Create: https://execise1api6921.azurewebsites.net/api/User/Listing (POST)
+    * Delete: https://execise1api6921.azurewebsites.net/api/User/Listing/1 (DELETE)
 
 <br><br>
 
@@ -254,7 +254,7 @@ Please follow below command in your command line to test the code locally.
 
 > # Database
 The targe database is located in Azure SQL Database. Please use the following information to access DB by your choice of a Database management tool such as SQL Server Management Studio.<br>
-The firewall rull is set open to the whole IP range as I don't know Virbela's IP ranges at this time.
+The firewall rule is set to open to the whole IP range as I don't know Virbela's IP ranges at this time.
 
 * Staging:
 The database is for Vribela personnel to test the API functions
@@ -335,5 +335,38 @@ Please use the credentials in the previous section to access the database via yo
 * Created_Date: DateTime
 
 <br>
+
+> # Deployment
+The API application is currently deployed on Azure as Staging for testing.
+See below for server details:
+
+> * Application: <br>
+>   * Url: https://execise1api6921.azurewebsites.net <br>
+>   * OS: Debian Version 10 <br>
+> * Database: <br>
+>   * Type: SQL Database <br>
+>   * Server: virbelalisting.database.windows.net <br>
+>   * Database: VirbelaListing <br>
+
+<br>
+
+## Application Deployment
+The application is deployed by GitHub action. The script is located at:
+> *{Exercise1 Root}*/.github/workflows/staging_execise1api6921.yml <br>
+The script will be activated to deploy the application onto Azure App Service if the code is pushed from IDE or Pull Request.
+
+<br>
+
+## Database Deployment
+Database structure is deployed by **Scaffolding service of Entity Framework Core**. <br>
+Database migration instructions are provided at: <br>
+
+> *{Exercise1 Root}*/Exercise1.DbScaffold/EF DB Migration Instructions.txt <br>
+
+Currently, **Exercise1.DbScaffold** project is set up to seed the database with a basic dataset.
+The contents of the data seeding were explained in **Initial Data Set** chapter.
+Although the seeding service is convenient, the seeding should be used only during the initial set-up of the database and is not meant to migrate a large set of data.
+
+
 
 
