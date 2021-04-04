@@ -45,20 +45,8 @@ namespace Exercise1.Api.Controllers
             // [FromQuery] string createdDate, 
             CancellationToken cancellationToken)
         {
-            Listinguser user = (Listinguser)HttpContext.Items["User"];
-            object parameters = new List<KeyValuePair<string, string>> {
-                // new KeyValuePair<string, string> ("CreatorId", user.Id.ToString()),
-                new KeyValuePair<string, string> ("RegionId", user.RegionId.ToString()),
-                new KeyValuePair<string, string> ("Title", title),
-                new KeyValuePair<string, string> ("Description", description),
-                new KeyValuePair<string, string> ("Price", price),
-                new KeyValuePair<string, string> ("RegionName", regionName),
-            };
-
-            // Repository returns paged data if pageNum and pageSize are provided
-            var listings = await _unitOfWork.Region_ListingRepository
-                                .GetAsync(parameters, pageNum, pageSize);
-            return Ok(listings);
+            _logger.LogWarning("RegionalListingController.Delete has not been implemented.");
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
         [HttpGet("{id}")]
