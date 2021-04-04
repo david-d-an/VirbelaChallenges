@@ -4,14 +4,16 @@ using Exercise1.DbScaffold.Models.VirbelaListing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Exercise1.DbScaffold.Migrations.VirbelaListing
 {
     [DbContext(typeof(VirbelaListingContext))]
-    partial class VirbelaListingContextModelSnapshot : ModelSnapshot
+    [Migration("20210404130254_UpdateDb_7")]
+    partial class UpdateDb_7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,24 +106,6 @@ namespace Exercise1.DbScaffold.Migrations.VirbelaListing
                             Description = "Description for Listing E. Details for Listing E is provided here.",
                             Price = 556.99m,
                             Title = "Listing E"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDate = new DateTime(2021, 4, 1, 19, 43, 58, 0, DateTimeKind.Unspecified),
-                            CreatorId = 4,
-                            Description = "Description for Listing F. Details for Listing F is provided here.",
-                            Price = 489.99m,
-                            Title = "Listing F"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedDate = new DateTime(2021, 3, 31, 8, 22, 38, 0, DateTimeKind.Unspecified),
-                            CreatorId = 4,
-                            Description = "Description for Listing G. Details for Listing G is provided here.",
-                            Price = 124.99m,
-                            Title = "Listing G"
                         });
                 });
 
