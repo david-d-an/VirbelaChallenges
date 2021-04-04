@@ -17,11 +17,11 @@ namespace Exercise1.Api.Controllers
     [Route("api/[controller]")]
     public class RegionalListingController : ControllerBase
     {
-        private ILogger<ListingController> _logger;
+        private ILogger<RegionalListingController> _logger;
         private IUnitOfWork _unitOfWork;
 
         public RegionalListingController(
-            ILogger<ListingController> logger,
+            ILogger<RegionalListingController> logger,
             IUnitOfWork unitOfWork)
         {
             this._logger = logger;
@@ -30,9 +30,9 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet]
         [TokenAuthorize()]
-        // [AllowAnonymous]
+        /*  Use cache to repeat request within short time */
         [ResponseCache(
-            Duration = 60,
+            Duration = 10,
             Location = ResponseCacheLocation.Client,
             NoStore = false)]
         public async Task<IActionResult> Get(
@@ -53,6 +53,7 @@ namespace Exercise1.Api.Controllers
                 new KeyValuePair<string, string> ("Price", price )
             };
 
+            // Repository returns paged data if pageNum and pageSize are provided
             var listings = await _unitOfWork.ListingRepository
                                 .GetAsync(parameters, pageNum, pageSize);
             return Ok(listings);
@@ -60,19 +61,15 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet("{id}")]
         [TokenAuthorize()]
-        [ResponseCache(
-            Duration = 60,
-            Location = ResponseCacheLocation.Client,
-            NoStore = false)]
         public async Task<IActionResult> Get(
             int id, 
             CancellationToken cancellationToken)
         {
-            var listing = await _unitOfWork.ListingRepository
-                                .GetAsync(id.ToString());
-            return Ok(listing);
+            _logger.LogWarning("RegionalListingController.Get(id) has not been implemented.");
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
+        // TO DO: Assess YAGNI
         [HttpPut("{id}")]
         [TokenAuthorize()]
         public async Task<IActionResult> Put(
@@ -80,42 +77,19 @@ namespace Exercise1.Api.Controllers
             Listing listingUpdateRequest, 
             CancellationToken cancellationToken)
         {
-            int idNum;
-            if (!int.TryParse(id, out idNum))
-                return BadRequest();
-
-            try {
-                Listing listing = await _unitOfWork.ListingRepository
-                                        .PutAsync(id, listingUpdateRequest);
-                _unitOfWork.Commit();
-                return Ok(listing);
-            } catch(Exception ex) {
-                _logger.LogError(ex, ex.Message);
-                _unitOfWork.Rollback();
-                return BadRequest();
-            }
+            _logger.LogWarning("RegionalListingController.Put has not been implemented.");
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
+        // TO DO: Assess YAGNI
         [HttpPost]
         [TokenAuthorize()]
         public async Task<IActionResult> Post(
             Listing listingCreateRequest, 
             CancellationToken cancellationToken)
         {
-            try {
-                Listing listing = await _unitOfWork.ListingRepository.PostAsync(listingCreateRequest);
-                _unitOfWork.Commit();
-
-                return CreatedAtAction(
-                    nameof(Post), 
-                    nameof(ListingController), 
-                    new { Id = listing.Id }, 
-                    listing);
-            } catch(Exception ex) {
-                _logger.LogError(ex, ex.Message);
-                _unitOfWork.Rollback();
-                return BadRequest();
-            }
+            _logger.LogWarning("RegionalListingController.Post has not been implemented.");
+            return await TaskConstants<IActionResult>.NotImplemented;
         }
 
         // TO DO: Assess YAGNI
@@ -125,7 +99,7 @@ namespace Exercise1.Api.Controllers
             int id, 
             CancellationToken cancellationToken)
         {
-            _logger.LogWarning("ListingController.Delete has not been implemented.");
+            _logger.LogWarning("RegionalListingController.Delete has not been implemented.");
             return await TaskConstants<IActionResult>.NotImplemented;
         }
     }

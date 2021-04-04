@@ -24,6 +24,7 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
         {
             if (!optionsBuilder.IsConfigured)
             {
+                // Staging Setting
                 // "Server=tcp:virbelalisting.database.windows.net,1433;
                 // Initial Catalog=VirbelaListing;
                 // Persist Security Info=False;
@@ -31,7 +32,18 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
                 // Password={password};
                 // MultipleActiveResultSets=False;
                 // Encrypt=True;TrustServerCertificate=False;"
-                var encConnStrVirbelaListing = "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpyZwH81uC883tyfXS2caR6rk0fTN1u/+dg05+L7sfLuDe8becDugt35NR2ahQEXCdVmHOs4JRAwWqvkL0EcqVVmwP4g1zUdfvg4yhzOtXVLmrf+xJFG6CFlCRw91hgUTCk5A6a2uPYHpKKiW7U0/cTZ6i9vKFqFJMvXxzRKU2hu3aMJ1iZsWgF3AR1jSwEOHQg=";
+                // var encConnStrVirbelaListing = "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpyZwH81uC883tyfXS2caR6rk0fTN1u/+dg05+L7sfLuDe8becDugt35NR2ahQEXCdVmHOs4JRAwWqvkL0EcqVVmwP4g1zUdfvg4yhzOtXVLmrf+xJFG6CFlCRw91hgUTCk5A6a2uPYHpKKiW7U0/cTZ6i9vKFqFJMvXxzRKU2hu3aMJ1iZsWgF3AR1jSwEOHQg=";
+
+                // Development Setting
+                // "Server=tcp:virbelalisting.database.windows.net,1433;
+                // Initial Catalog=VirbelaListingDev;
+                // Persist Security Info=False;
+                // User ID=appuser;
+                // Password={password};
+                // MultipleActiveResultSets=False;
+                // Encrypt=True;TrustServerCertificate=False;"
+                var encConnStrVirbelaListing = "RsJZctQGW8rsO2X/vhh7ewsDAKo8xDo7bEpjS7RwZFkq9KFLnlGEQLM9b3jGYARYVUINRxCTboYny3aWahtP7BHOew2ToMyxGDuO9BuYfpxmNDCVRydZ5efJTTL2O9FkiOGrbqlILlQPt5/8DcwssjosrrVeyxXrgIHB7pIN48IPOLp29HxT67vWGovw4jt+QtegcVynARe8g9XbGU6dB57kDogQ5t33I5iovM52B1o8tzRuYekLE/std6JtXC7McwscfvTKSE+85Woq7ljaLP6k5pRx83QaMvCe6Y7ICdAc5oKTzODrVpEZ+ae3uhaR";
+
                 var connStrVirbelaListing = AesCryptoUtil.Decrypt(encConnStrVirbelaListing);
                 optionsBuilder.UseSqlServer(connStrVirbelaListing);
             }
@@ -126,6 +138,10 @@ namespace Exercise1.DbScaffold.Models.VirbelaListing
             modelBuilder.Entity<Region>(entity =>
             {
                 entity.ToTable("region");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("IX_name")
+                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

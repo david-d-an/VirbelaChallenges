@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 
-namespace Exercise1.Api.Controllers
+namespace Exercise1.Api.Common
 {
     public class MockProblemDetailsFactory : ProblemDetailsFactory
     {

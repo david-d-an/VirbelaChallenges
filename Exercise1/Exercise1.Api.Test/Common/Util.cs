@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Exercise1.Api.Test.Helper {
-    public static class Helper
+namespace Exercise1.Api.Common {
+    public static class Util
     {
         public static IConfigurationRoot GetConfiguration() {
             string appsettingDirectory = 
