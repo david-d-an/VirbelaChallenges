@@ -5,6 +5,12 @@ using Exercise1.DataAccess.Context;
 
 namespace Exercise1.DataAccess.Repos.VirbelaListing
 {
+
+    /*********************************************/
+    /* Very standard Unit of Work implementation */
+    /* This allows commit/rollback               */
+    /*********************************************/
+
     public class UnitOfWork : IUnitOfWork, IDisposable {
         private readonly VirbelaListingContext _virbelaListingContext;
         private IRepository<Listing> _listingRepository;

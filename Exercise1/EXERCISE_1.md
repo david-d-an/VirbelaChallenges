@@ -7,19 +7,39 @@ As you progress through the steps, feel free to add comments to the code about *
 ### What you need ###
 
 * IDE of your choice
+	<br>
 	VS Code
 * Git
+	<br>
 	Github: https://github.com/dong82/VirbelaChallenges
 * Some chosen backend language / framework
+	<br>
 	C#
 * Some chosen local data store
-	I used Azure DB, so that deployed app has data access.
+	<br>
+	I used Azure SQL Database, so that deployed app has data access.
+	<br>
 	Azure SQL Database: 
-		Server: virbelalisting.database.windows.net
-		Port: 1433
-		Initial Catalog: VirbelaListing
-		User ID: appuser
-		Password: virbela1234!
+	<br>
+	<br>
+
+	Please use below Staging database for your testing.
+	<br>
+	* Server: virbelalisting.database.windows.net
+	* Port: 1433
+	* Initial Catalog: VirbelaListing
+	* User ID: appuser
+	* Password: virbela1234!
+
+	Below is Development database I am using for development.
+	<br>
+	* Server: virbelalisting.database.windows.net
+	* Port: 1433
+	* Initial Catalog: VirbelaListingDev
+	* User ID: appuser
+	* Password: virbela1234!
+
+<br>
 
 ## Instructions ##
 
@@ -59,12 +79,31 @@ Please implement any of the following stretch goals. They are in no particular o
 ## Questions ##
 
  1. How can your implementation be optimized?
+	* Database replication
+	* Denomalizing database as necessary to address frequent joins. Currently, I fully normalized three tables to minimize redundancy. However, Region is included in Listing almost all the time and it should be inluded in Listing table to reduce join operations.
+	* Use document database as each listing is a document with minimum relations
+	* Plan for scaling using cloud servers. The API app is deployed on AZ App Service and is ready for scaling. I just need to set up a strategy balance performance/cost.	
+	* Use CDN and caches
+
  1. How much time did you spend on your implementation?
+	* General setup: 6 (GitHub, Azure DB, VS Code)
+	* Functionality work: 24 hours
+	* Unit Testing: 20 hours
+	* Deployment configuration: 2 hours
+	* Documentation: 2hours
+
  1. What was most challenging for you?
+	* Creating custom Token base authentication. I used Identity Server previously and didn't need to disect token generation/verification. I learned good stuff during this challenge. 
+	* Unit testing for DAL layer. Unit testing on DAL layer was not so possible for PUT and POST in/out of database.
+	* There are about 30 mroe unit testing to address all the edge cases but I ran out of time.
 
 ## Next Steps ##
 
 * Confirm you've addressed the functional goals
+	- I believe that all functionalities were implemented.
 * Answer the questions above by adding them to this file
+	- Done.
 * Make sure your README.md is up to date with setup and run instructions
+	- README.md is up to date.
 * Ensure you've followed the sharing instructions in the main [README](../README.md)
+	- Roger.

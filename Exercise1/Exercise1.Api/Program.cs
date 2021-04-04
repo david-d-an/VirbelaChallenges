@@ -16,6 +16,7 @@ namespace Exercise1.Api
         private static bool IsDevelopment =>
             Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
 
+        // This is where environmental configuration is picked up.
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", false, true)
@@ -55,6 +56,7 @@ namespace Exercise1.Api
                     logging.AddDebug();
                 })
                 .UseSerilog((hostingContext, loggerConfig) =>
+                    // Serilog is used for logging. Log files are located in Logs folder.
                     loggerConfig.ReadFrom.Configuration(hostingContext.Configuration)
                 )
                 .ConfigureWebHostDefaults(webBuilder => {

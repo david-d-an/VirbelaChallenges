@@ -4,33 +4,93 @@
 * Phone: (301) 351-0655
 * Recruiter in charge: Ari Alcaraz (ari.alcaraz@virbela.com)
 
+<br>
+<br>
+
 # Introduction
 The project was written for .Net Core 3.1.
-Please install the .Net Core SDK 3.1 to locally debug the projecgt.
+Please install the .Net Core SDK 3.1 to locally debug the project.
 
-# Build
-Please follow below command in your command line to test the code locally.
+<br>
+<br>
+
+# Project Structure
+The entire solution is bound under Exercise1.sln and there are 7 projects total
+```
+  Excercise1.sln
+    |
+    |- Exercise1.Api   (Main API application)
+    |
+    |- Exercise1.Api.Test   (Unit test for Exercise1.Api)
+    |
+    |- Exercise1.Common   (Collection of small utility functions/classes)
+    |
+    |- Exercise1.Data   (Collection of models for object, repository, and unit of work)
+    |
+    |- Exercise1.DataAccess   (Implementation of Exercise1.Data)
+    |
+    |- Exercise1.DataAccess.Test   (Unit test for Exercise1.DataAccess)
+    |
+    |- Exercise1.DbScaffold   (Database scaffold to create object models and context and deploy database with seeds)
+```
+
+<br>
+<br>
+
+# Build and Run
+Please follow the below command in your command line to run the API locally.
 ```sh
-> cd ./Execise1.Api
+> cd {Exercise1 Root}/Execise1.Api
 > dotnet restore
 > dotnet build
 > dotnet run
 ```
 
-# Database
-The targe database is located in Azure SQL Database. Please use the following information to access DB by your choice of a Database management tool.
+<br>
+<br>
 
-* Server: virbelalisting.database.windows.net
-* Port: 1433
-* Initial Catalog: VirbelaListing
-* User ID: appuser
-* Password: virbela1234!
-* Firewall: Open to all as I don't know Virbela's IP ranges at this time
+# Unit Test
+Please follow below command in your command line to test the code locally.
+```sh
+> cd {Exercise1 Root}/Execise1.Api.Test
+> dotnet restore
+> dotnet build
+> dotnet test
+> cd {Exercise1 Root}/Execise1.DataAccess.Test
+> dotnet restore
+> dotnet build
+> dotnet test
+```
+
+<br>
+<br>
+
+# Database
+The targe database is located in Azure SQL Database. Please use the following information to access DB by your choice of a Database management tool. The firewall is open to all as I don't know Virbela's IP ranges at this time.
+
+* Staging:
+The database is for Vribela personnel to test the API functions
+    * Server: virbelalisting.database.windows.net
+    * Port: 1433
+    * Initial Catalog: VirbelaListing
+    * User ID: appuser
+    * Password: virbela1234!
+
+* Development:
+The database is for development to build API functions
+    * Server: virbelalisting.database.windows.net
+    * Port: 1433
+    * Initial Catalog: VirbelaListingDev
+    * User ID: appuser
+    * Password: virbela1234!
+
+<br>
+<br>
 
 # API Endpoint
-In this article, the common HTTPS address to access the API services will be called **Endpoint** . The endpoint typically is in  a format similar to https://contoso.com/api. To activate a particular API service, a request must be sent to the endpoint with speicfic request type and a body if necessary. Please see the next chapter *Functionalities* for request details.
+In this article, the common HTTPS address to access the API services will be called **Endpoint** . The endpoint typically is in  a format similar to https://contoso.com/api. To activate a particular API service, a request must be sent to the endpoint with specific request type and a body if necessary. Please see the next chapter *Functionalities* for request details.
 
-Currently, the app is deployed on Azure App Service to provide a staging environment. Plase consult next two section to find API Endpoints for *Developemnt* and *Staging* environments,.
+Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find API Endpoints for *Developemnt* and *Staging* environments.
 
 ## Local (Development)
 The API runs off of port 15000 over TLS by default (i.e., https://localhost:15000/api). Some of the most popular HTTP request addresses are as follows:
@@ -46,7 +106,7 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
     * Delete: https://localhost:15000/api/User/Listing/1 (DELETE)
 
 ## Azure App Service (Staging)
-The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are synonymous to the local address except the domain address. Please see below for details:
+The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are synonymous with the local address except for the domain address. Please see below for details:
 
 * User Management
     * Registration: https://execise1api6921.scm.azurewebsites.net/api/User/Register (POST)
@@ -58,6 +118,9 @@ The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. H
     * Create: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (POST)
     * Delete: https://execise1api6921.scm.azurewebsites.net0/api/User/Listing/1 (DELETE)
 
+
+<br>
+<br>
 
 # Functionalities
 This chapter will explain the types of services and usage instructions.
@@ -87,7 +150,7 @@ Most actions of the API app requires acees token, which can be obtained only aft
 ## Listing Management
 
 ### View All Listings
-User can view all listing in his/her region whether the listings were created by him/her or not. The request can be sent as HTTP GET to ***{EndPoint}/Listing***. 
+Users can view all listings in his/her region whether the listings were created by him/her or not. The request can be sent as HTTP GET to ***{EndPoint}/Listing***. 
 
 ### CRUD on Listing
 
@@ -106,7 +169,9 @@ User can view all listing in his/her region whether the listings were created by
 <br>
 
 # Initial Data Set
-The database was seeded with initial data to enable basic testing. Please use the credentials in  to get started:
+The database was seeded with initial data to enable basic testing. 
+The staging database will have the exact dataset described below for Virbela.
+Please use the credentials in the previous section to access the database via your DB management tool such as SQL Server Management Studio.
 
 <br>
 
@@ -138,7 +203,7 @@ The database was seeded with initial data to enable basic testing. Please use th
 <br>
 
 * ID: Primary Key, Integer, Autoincrement by 1 starting from 1.
-* Name: String
+* Name: String, Unique
 
 <br>
 

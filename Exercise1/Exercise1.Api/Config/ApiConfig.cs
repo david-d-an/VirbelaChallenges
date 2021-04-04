@@ -16,22 +16,12 @@ namespace Exercise1.Api.Config
 
         public static SecuritySettings GetSecuritySettings(
             IConfiguration cfg) 
-            // ILogger<Startup> logger)
         {
-            // var redirectUris = GetConfigSection(cfg, "RedirectUris");
-            // var postLogoutRedirectUris = GetConfigSection(cfg, "PostLogoutRedirectUris");
-            // var allowedCorsOrigins = GetConfigSection(cfg, "AllowedCorsOrigins");
             var security = new SecuritySettings {
                 ApiName = cfg["ApiName"],
                 StsAuthority = cfg["StsAuthority"],
                 AllowedCorsOrigins = GetConfigSection(cfg, "AllowedCorsOrigins")
             };
-
-            // logger.LogInformation(string.Format("{0}: {1}", "ApiName", security.ApiName));
-            // logger.LogInformation(string.Format("{0}: {1}", "ClientName", security.StsAuthority));
-            // foreach(var s in security.AllowedCorsOrigins) {
-            //     logger.LogInformation(string.Format("{0}: {1}", "AllowedCorsOrigins", s));
-            // }
 
             return security;
         }

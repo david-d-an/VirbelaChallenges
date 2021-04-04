@@ -17,11 +17,11 @@ namespace Exercise1.Api.Controllers
     [Route("api/[controller]")]
     public class RegionalListingController : ControllerBase
     {
-        private ILogger<ListingController> _logger;
+        private ILogger<RegionalListingController> _logger;
         private IUnitOfWork _unitOfWork;
 
         public RegionalListingController(
-            ILogger<ListingController> logger,
+            ILogger<RegionalListingController> logger,
             IUnitOfWork unitOfWork)
         {
             this._logger = logger;
@@ -30,6 +30,7 @@ namespace Exercise1.Api.Controllers
 
         [HttpGet]
         [TokenAuthorize()]
+        /*  Use cache to repeat request within short time */
         [ResponseCache(
             Duration = 10,
             Location = ResponseCacheLocation.Client,
@@ -52,6 +53,7 @@ namespace Exercise1.Api.Controllers
                 new KeyValuePair<string, string> ("Price", price )
             };
 
+            // Repository returns paged data if pageNum and pageSize are provided
             var listings = await _unitOfWork.ListingRepository
                                 .GetAsync(parameters, pageNum, pageSize);
             return Ok(listings);
