@@ -6,6 +6,7 @@
 
 <br><br>
 
+
 > # Introduction
 The title of the project is **Excercise1** which provides **API Endpoints** that provide several different services:
 * Authentication / User Registration

@@ -134,8 +134,8 @@ Please implement any of the following stretch goals. They are in no particular o
 * Confirm you've addressed the functional goals
 	> * I believe that all functionalities were implemented.
 * Answer the questions above by adding them to this file
-	> * Done.
+	> * Done. <br>
 * Make sure your README.md is up to date with setup and run instructions
-	> * README.md is up to date.
+	> * README.md is up to date. <br>
 * Ensure you've followed the sharing instructions in the main [README](../README.md)
-	> * Roger.
+	> * Roger. <br>
