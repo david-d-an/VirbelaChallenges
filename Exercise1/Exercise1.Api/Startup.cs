@@ -59,9 +59,6 @@ namespace Exercise1.Api
             );
             EnsureDatabaseExists<VirbelaListingContext>(connStrVirbelaListing);
 
-            // services.AddTransient<IRepository<Region>, RegionRepository>();
-            // services.AddTransient<IRepository<Listing>, ListingRepository>();
-            // services.AddTransient<IRepository<Listinguser>, ListinguserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             // configure DI for application services
