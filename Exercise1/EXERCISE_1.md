@@ -7,19 +7,9 @@ As you progress through the steps, feel free to add comments to the code about *
 ### What you need ###
 
 * IDE of your choice
-	VS Code
 * Git
-	Github: https://github.com/dong82/VirbelaChallenges
 * Some chosen backend language / framework
-	C#
 * Some chosen local data store
-	I used Azure DB, so that deployed app has data access.
-	Azure SQL Database: 
-		Server: virbelalisting.database.windows.net
-		Port: 1433
-		Initial Catalog: VirbelaListing
-		User ID: appuser
-		Password: virbela1234!
 
 ## Instructions ##
 
