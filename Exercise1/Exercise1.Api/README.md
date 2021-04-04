@@ -1,20 +1,22 @@
-# Applicant Information
+> # Applicant Information
 * Name: David An
 * Email: david.d.an@outlook.com
 * Phone: (301) 351-0655
 * Recruiter in charge: Ari Alcaraz (ari.alcaraz@virbela.com)
 
-<br>
-<br>
+<br><br>
 
-# Introduction
+> # Introduction
+The title of the project is **Excercise1** which provides one **API Endpoint** that provides several different services:
+* Authentication / User Registration
+* Create / View / Update Ad-Listings
+
 The project was written for .Net Core 3.1.
 Please install the .Net Core SDK 3.1 to locally debug the project.
 
-<br>
-<br>
+<br><br>
 
-# Project Structure
+> # Project Structure
 The entire solution is bound under Exercise1.sln and there are 7 projects total
 ```
   Excercise1.sln
@@ -31,13 +33,12 @@ The entire solution is bound under Exercise1.sln and there are 7 projects total
     |
     |- Exercise1.DataAccess.Test   (Unit test for Exercise1.DataAccess)
     |
-    |- Exercise1.DbScaffold   (Database scaffold to create object models and context and deploy database with seeds)
+    |- Exercise1.DbScaffold   (Database scaffold to create object-models / context and deploy DB with seed data)
 ```
 
-<br>
-<br>
+<br><br>
 
-# Build and Run
+> # Build and Run
 Please follow the below command in your command line to run the API locally.
 ```sh
 > cd {Exercise1 Root}/Execise1.Api
@@ -45,50 +46,164 @@ Please follow the below command in your command line to run the API locally.
 > dotnet build
 > dotnet run
 ```
+Currently, the application is configured to run on https://localhost:15000. <br>
+If the port is already occupied, declare another point inside **launchSetings.json**.
+<br><br><br>
 
-<br>
-<br>
+> # Functionalities in API Application
+This chapter will explain the types of services and usage instructions.
 
-# Unit Test
-Please follow below command in your command line to test the code locally.
-```sh
-> cd {Exercise1 Root}/Execise1.Api.Test
-> dotnet restore
-> dotnet build
-> dotnet test
-> cd {Exercise1 Root}/Execise1.DataAccess.Test
-> dotnet restore
-> dotnet build
-> dotnet test
+## Authentication
+Most actions of the API app requires acees token, which can be obtained only after successful login. To login, send an HTTP POST request with a JSON body attache to ***{EndPoint}/login*** in the following format:
+```json
+{
+    "userid": "jsmith",     // string: required
+    "password": "test"      // string: required
+}
+```
+Upon successufl authentication, the server will respond with a response body in the following format:
+```json
+{
+    "id": 1,
+    "firstname": "John",
+    "lastname": "Smith",
+    "userid": "jsmith",
+    "email": "jsmith@contoso.com",
+    "regionId": 1,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJJZCI6IjEiLCJVc2VyaWQiOiJqc21pdGg..."
+}
 ```
 
-<br>
-<br>
-
-# Database
-The targe database is located in Azure SQL Database. Please use the following information to access DB by your choice of a Database management tool. The firewall is open to all as I don't know Virbela's IP ranges at this time.
-
-* Staging:
-The database is for Vribela personnel to test the API functions
-    * Server: virbelalisting.database.windows.net
-    * Port: 1433
-    * Initial Catalog: VirbelaListing
-    * User ID: appuser
-    * Password: virbela1234!
-
-* Development:
-The database is for development to build API functions
-    * Server: virbelalisting.database.windows.net
-    * Port: 1433
-    * Initial Catalog: VirbelaListingDev
-    * User ID: appuser
-    * Password: virbela1234!
+The token string is a self contained Jason Web Token and must be attached if the API service requires authentication to prevent **HTTP 401 Unauthorized** response
 
 <br>
+
+## User Management
+### Registration
+Anyone can create an account by sending a JSON body attached to HTTP POST request to ***{EndPoint}/register*** in the following format:
+```json
+{
+    "Id": 0,                    // Int: requiredd as placeholder, value insignificant
+    "UserId": "jsmith",         // string: required
+    "FirstName": "John",        // string: can be null
+    "LastName": "Smith",        // string: can be null
+    "Password": "test",         // string: required
+    "RegionId": 1,              // Int: required, foreign key to Region.Id
+}
+```
+### User Information Update
+The feature has not been implemented yet.
+
+### Delte/Deactivate User
+The feature has not been implemented yet.
+
 <br>
 
-# API Endpoint
-In this article, the common HTTPS address to access the API services will be called **Endpoint** . The endpoint typically is in  a format similar to https://contoso.com/api. To activate a particular API service, a request must be sent to the endpoint with specific request type and a body if necessary. Please see the next chapter *Functionalities* for request details.
+## Listing Management
+The API supports basic CRUD operations on listings:
+1. Get(Parameters): returns collection of listings that math Parameters 
+1. Get(Id): returns a listing that matches id value
+1. Put(Id, Listing-Data): updates a listing that matches id value
+1. Post(Listing-Data): creates a listing
+
+### 1. Find All Listings in User's Region
+Users can view all listings in his/her region whether the listings were created by him/her or not.<br>
+
+* Request Type: GET
+* Service Url: **{Endpoint}**/Listing 
+* Input Parameters: (included in the query string)
+    * pageNum: string
+    * pageSize: int
+    * title: string
+    * description: string
+    * price: decimal
+    * regionName: string
+* Output: List of Region_Listing that has the following fields:
+    * Id: Int, Primary key of Listing
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+    * RegionId: Int, Id of Region with which user is associated.
+    * RegionName: String, name of Region with which user is associated.
+
+### 2. Find One Listing
+Users can view any listing in his/her region whether the listings were created by him/her or not.<br>
+
+* Request Type: GET
+* Service Url: **{Endpoint}**/Listing/{id}
+* Input Parameters: None
+* Output: List of Region_Listing that has the following fields:
+    * Id: Int, Primary key of Listing
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+    * RegionId: Int, Id of Region with which user is associated.
+    * RegionName: String, name of Region with which user is associated.
+
+### 3. Edit Listing
+Users can edit any listing created by himself/herself.<br>
+
+* Request Type: PUT
+* Service Url: **{Endpoint}**/Listing/{id}
+* Input Parameters: (attahced as body)
+    * Id: Int, Primary key of Listing, must match {id} in Service Url.
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+* Output: The updated Listing:
+    * Id: Int, Primary key of Listing
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
+
+### 4. Create Listing
+Users can create any listing.<br>
+
+* Request Type: POST
+* Service Url: **{Endpoint}**/Listing
+* Input Parameters: (attahced as body)
+    * Id: Int, Primary key of Listing
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+* Output: The created Listing:
+    * Id: Int, Primary key of Listing, Database will assign a new Id upon creation.
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+
+### 5. Delete Listing
+Users can delete any listing created by himself/herself.<br>
+
+* Request Type: DELETE
+* Service Url: **{Endpoint}**/Listing/{id}
+* Input Parameters: None
+* Output: The deleted Listing:
+    * Id: Int, Primary key of Listing
+    * Title: String, Title of Listing
+    * Description: String, Description of Listing
+    * Price: Decimal, Price of Listing
+    * CreatorId: Int, Primary key of user who created Listing
+    * CreatedDate: DateTime, Date when Listing was created
+* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
+
+<br><br>
+
+> # API Endpoint
+In this article, the common HTTPS address to access the API services will be called **Endpoint** . The endpoint typically is in  a format similar to https://contoso.com/api. To activate a particular API service, a request must be sent to the endpoint with specific request type and a body and a query string if necessary. Please see the next chapter *Functionalities* for request details.
 
 Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find API Endpoints for *Developemnt* and *Staging* environments.
 
@@ -118,57 +233,46 @@ The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. H
     * Create: https://execise1api6921.scm.azurewebsites.net/api/User/Listing (POST)
     * Delete: https://execise1api6921.scm.azurewebsites.net0/api/User/Listing/1 (DELETE)
 
+<br><br>
 
-<br>
-<br>
-
-# Functionalities
-This chapter will explain the types of services and usage instructions.
-## User Management
-### Registration
-Anyone can create an account by sending a JSON body attached to HTTP POST request to ***{EndPoint}/register*** in the following format:
-```json
-{
-    "Id": 0,                    // Int: requiredd as placeholder, value insignificant
-    "UserId": "jsmith",         // string: required
-    "FirstName": "John",        // string: can be null
-    "LastName": "Smith",        // string: can be null
-    "Password": "test",         // string: required
-    "RegionId": 1,              // Int: required, foreign key to Region.Id
-}
+> # Unit Test
+Please follow below command in your command line to test the code locally.
+```sh
+> cd *{Exercise1 Root}*/Execise1.Api.Test
+> dotnet restore
+> dotnet build
+> dotnet test
+> cd {Exercise1 Root}/Execise1.DataAccess.Test
+> dotnet restore
+> dotnet build
+> dotnet test
 ```
+<br><br>
 
-### Login
-Most actions of the API app requires acees token, which can be obtained only after successful login. To login, send an HTTP POST request with a JSON body attache to ***{EndPoint}/login*** in the following format:
-```json
-{
-    "userid": "jsmith",     // string: required
-    "password": "test"      // string: required
-}
-```
+> # Database
+The targe database is located in Azure SQL Database. Please use the following information to access DB by your choice of a Database management tool such as SQL Server Management Studio.<br>
+The firewall rull is set open to the whole IP range as I don't know Virbela's IP ranges at this time.
 
-## Listing Management
+* Staging:
+The database is for Vribela personnel to test the API functions
+    * Server: virbelalisting.database.windows.net
+    * Port: 1433
+    * Initial Catalog: VirbelaListing
+    * User ID: appuser
+    * Password: virbela1234!
 
-### View All Listings
-Users can view all listings in his/her region whether the listings were created by him/her or not. The request can be sent as HTTP GET to ***{EndPoint}/Listing***. 
+* Development:
+The database is for development to build API functions
+    * Server: virbelalisting.database.windows.net
+    * Port: 1433
+    * Initial Catalog: VirbelaListingDev
+    * User ID: appuser
+    * Password: virbela1234!
 
-### CRUD on Listing
-
-## Regional Listing Management
-### View All Listings
-
-### CRUD on Listing
-
-
-### 
-
+<br><br>
 
 
-
-<br>
-<br>
-
-# Initial Data Set
+> # Initial Data Set
 The database was seeded with initial data to enable basic testing. 
 The staging database will have the exact dataset described below for Virbela.
 Please use the credentials in the previous section to access the database via your DB management tool such as SQL Server Management Studio.
