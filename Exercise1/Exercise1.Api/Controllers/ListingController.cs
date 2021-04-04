@@ -66,9 +66,13 @@ namespace Exercise1.Api.Controllers
             int id, 
             CancellationToken cancellationToken)
         {
-            var listing = await _unitOfWork.ListingRepository
+            Listinguser user = (Listinguser)HttpContext.Items["User"];
+            var region_Listing = await _unitOfWork.Region_ListingRepository
                                 .GetAsync(id.ToString());
-            return Ok(listing);
+            if (region_Listing.RegionId != user.RegionId)
+                return Ok(null);
+
+            return Ok(region_Listing);
         }
 
         [HttpPut("{id}")]
