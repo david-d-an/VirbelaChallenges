@@ -38,23 +38,25 @@ namespace Exercise1.Api.Controllers
         public async Task<IActionResult> Get(
             [FromQuery] int? pageNum,
             [FromQuery] int? pageSize,
-            [FromQuery] string firstName,
-            [FromQuery] string lastName,
             [FromQuery] string title,
             [FromQuery] string description,
-            [FromQuery] string price, 
+            [FromQuery] string price,
+            [FromQuery] string regionName,
+            // [FromQuery] string createdDate, 
             CancellationToken cancellationToken)
         {
             Listinguser user = (Listinguser)HttpContext.Items["User"];
             object parameters = new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string> ("CreatorId", user.Id.ToString()),
-                new KeyValuePair<string, string> ("Title", title ),
-                new KeyValuePair<string, string> ("Description", description ),
-                new KeyValuePair<string, string> ("Price", price )
+                // new KeyValuePair<string, string> ("CreatorId", user.Id.ToString()),
+                new KeyValuePair<string, string> ("RegionId", user.RegionId.ToString()),
+                new KeyValuePair<string, string> ("Title", title),
+                new KeyValuePair<string, string> ("Description", description),
+                new KeyValuePair<string, string> ("Price", price),
+                new KeyValuePair<string, string> ("RegionName", regionName),
             };
 
             // Repository returns paged data if pageNum and pageSize are provided
-            var listings = await _unitOfWork.ListingRepository
+            var listings = await _unitOfWork.Region_ListingRepository
                                 .GetAsync(parameters, pageNum, pageSize);
             return Ok(listings);
         }
