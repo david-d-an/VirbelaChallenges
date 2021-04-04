@@ -7,7 +7,7 @@
 <br><br>
 
 > # Introduction
-The title of the project is **Excercise1** which provides one **API Endpoint** that provides several different services:
+The title of the project is **Excercise1** which provides **API Endpoints** that provide several different services:
 * Authentication / User Registration
 * Create / View / Update Ad-Listings
 
@@ -52,9 +52,11 @@ If the port is already occupied, declare another point inside **launchSetings.js
 
 > # Functionalities in API Application
 This chapter will explain the types of services and usage instructions.
+A terminology **ApiRoot** is used in the chapter to denote the root location of all of the API services.<br>
+Please see the chapter **API Endpoints** to get the details
 
 ## Authentication
-Most actions of the API app requires acees token, which can be obtained only after successful login. To login, send an HTTP POST request with a JSON body attache to ***{EndPoint}/login*** in the following format:
+Most actions of the API app requires acees token, which can be obtained only after successful login. To login, send an HTTP POST request with a JSON body attache to ***{ApiRoot}/login*** in the following format:
 ```json
 {
     "userid": "jsmith",     // string: required
@@ -74,13 +76,14 @@ Upon successufl authentication, the server will respond with a response body in 
 }
 ```
 
-The token string is a self contained Jason Web Token and must be attached if the API service requires authentication to prevent **HTTP 401 Unauthorized** response
+The *token* is a string type, a self contained Jason Web Token and must be attached if the API service requires authentication to prevent **HTTP 401 Unauthorized** response.<br>
+To verfiy the contents of the token, you can use one of the online tools such as https://jwt.io/.
 
 <br>
 
 ## User Management
 ### Registration
-Anyone can create an account by sending a JSON body attached to HTTP POST request to ***{EndPoint}/register*** in the following format:
+Anyone can create an account by sending a JSON body attached to HTTP POST request to ***{ApiRoot}/register*** in the following format:
 ```json
 {
     "Id": 0,                    // Int: requiredd as placeholder, value insignificant
@@ -110,7 +113,7 @@ The API supports basic CRUD operations on listings:
 Users can view all listings in his/her region whether the listings were created by him/her or not.<br>
 
 * Request Type: GET
-* Service Url: **{Endpoint}**/Listing 
+* Service Url: **{ApiRoot}**/Listing 
 * Input Parameters: (included in the query string)
     * pageNum: string
     * pageSize: int
@@ -132,7 +135,7 @@ Users can view all listings in his/her region whether the listings were created 
 Users can view any listing in his/her region whether the listings were created by him/her or not.<br>
 
 * Request Type: GET
-* Service Url: **{Endpoint}**/Listing/{id}
+* Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: None
 * Output: List of Region_Listing that has the following fields:
     * Id: Int, Primary key of Listing
@@ -148,7 +151,7 @@ Users can view any listing in his/her region whether the listings were created b
 Users can edit any listing created by himself/herself.<br>
 
 * Request Type: PUT
-* Service Url: **{Endpoint}**/Listing/{id}
+* Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: (attahced as body)
     * Id: Int, Primary key of Listing, must match {id} in Service Url.
     * Title: String, Title of Listing
@@ -163,13 +166,13 @@ Users can edit any listing created by himself/herself.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
-* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
+* Note: If the access token's User Id is differet from the Id of the request, the server denies the request and wil return HTTP 401 Unauthorized response. 
 
 ### 4. Create Listing
 Users can create any listing.<br>
 
 * Request Type: POST
-* Service Url: **{Endpoint}**/Listing
+* Service Url: **{ApiRoot}**/Listing
 * Input Parameters: (attahced as body)
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
@@ -189,7 +192,7 @@ Users can create any listing.<br>
 Users can delete any listing created by himself/herself.<br>
 
 * Request Type: DELETE
-* Service Url: **{Endpoint}**/Listing/{id}
+* Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: None
 * Output: The deleted Listing:
     * Id: Int, Primary key of Listing
@@ -202,10 +205,10 @@ Users can delete any listing created by himself/herself.<br>
 
 <br><br>
 
-> # API Endpoint
-In this article, the common HTTPS address to access the API services will be called **Endpoint** . The endpoint typically is in  a format similar to https://contoso.com/api. To activate a particular API service, a request must be sent to the endpoint with specific request type and a body and a query string if necessary. Please see the next chapter *Functionalities* for request details.
+> # API Endpoints
+In this article, the common HTTPS address to access the API services will be called **Endpoint** and the url to the service domain as **ApiRoot**. The endpoint typically is in  a format similar to https://contoso.com/api/ResourceName. To activate a particular API service, a request of a specific request type (GET/PUT/POST/DELETE, etc.) must be sent to the correct endpoint with a request body or a query string if necessary. Please see the next chapter *Functionalities* for request details.
 
-Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find API Endpoints for *Developemnt* and *Staging* environments.
+Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find **API Endpoints** for *Developemnt* and *Staging* environments.
 
 ## Local (Development)
 The API runs off of port 15000 over TLS by default (i.e., https://localhost:15000/api). Some of the most popular HTTP request addresses are as follows:
@@ -221,7 +224,7 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
     * Delete: https://localhost:15000/api/User/Listing/1 (DELETE)
 
 ## Azure App Service (Staging)
-The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are synonymous with the local address except for the domain address. Please see below for details:
+The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
 
 * User Management
     * Registration: https://execise1api6921.scm.azurewebsites.net/api/User/Register (POST)
@@ -282,7 +285,7 @@ Please use the credentials in the previous section to access the database via yo
 ### 1. Listinguser
 
 | Id  |  UserId  |  Email                | Password   | Region |
-| :-: | -------- | --------------------- | :--------: | :----: |
+| :-: | :------- | :-------------------- | :--------: | :----: |
 |  1  | jsmith   | jsmith@contoso.com    | test       |   1    |
 |  2  | jdoe     | jdoe@contoso.com      | test       |   3    |
 |  3  | lmessi   | lmessi@contoso.com    | test       |   4    |
@@ -315,7 +318,7 @@ Please use the credentials in the previous section to access the database via yo
 ### 3. Listing
 
 | Id  | Title     |        Description          | Price  | Creator_Id |    Created_Date     |
-| :-: |-----------|-----------------------------| -----: | :--------: |---------------------| 
+| :-: | :-------- | :-------------------------- | -----: | :--------: | :------------------ | 
 |  1  | Listing A | Descripion for Listing A... |  12.34 |     1      | 2021-03-21 09:15:22 |
 |  2  | Listing B | Descripion for Listing B... |  22.34 |     1      | 2021-04-01 13:46:52 |
 |  3  | Listing C | Descripion for Listing C... |  32.45 |     2      | 2021-03-11 15:42:59 |
