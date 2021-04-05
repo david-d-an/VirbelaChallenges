@@ -85,8 +85,6 @@ namespace Exercise1.Api.Controllers
             int idNum;
             if (!int.TryParse(id, out idNum))
                 return BadRequest();
-            else if (idNum != listingUpdateRequest.Id)
-                return BadRequest();
 
             var user = (Listinguser)HttpContext.Items["User"];
             try {
@@ -95,10 +93,16 @@ namespace Exercise1.Api.Controllers
                 if (listing == null || listing.CreatorId != user.Id)
                     return Unauthorized();
  
-                Listing updatedListing = await _unitOfWork.ListingRepository
-                                        .PutAsync(id, listingUpdateRequest);
+                listing.Title = listingUpdateRequest.Title;
+                listing.Description = listingUpdateRequest.Description;
+                listing.Price = listingUpdateRequest.Price;
+
+                // Since Listing is already tracked by GetAsync() above,
+                // No need to call for PutAsync(). 
+                // Listing updatedListing = await _unitOfWork.ListingRepository
+                //                         .PutAsync(id, listingUpdateRequest);
                 _unitOfWork.Commit();
-                return Ok(updatedListing);
+                return Ok(listing);
             } catch(Exception ex) {
                 _logger.LogError(ex, ex.Message);
                 _unitOfWork.Rollback();
@@ -113,6 +117,9 @@ namespace Exercise1.Api.Controllers
             CancellationToken cancellationToken)
         {
             try {
+                var user = (Listinguser)HttpContext.Items["User"];
+                listingCreateRequest.CreatorId = user.Id;
+                listingCreateRequest.CreatedDate = DateTime.UtcNow;
                 Listing listing = await _unitOfWork.ListingRepository.PostAsync(listingCreateRequest);
                 _unitOfWork.Commit();
 

@@ -115,12 +115,14 @@ Users can view all listings in his/her region whether the listings were created 
 * Request Type: GET
 * Service Url: **{ApiRoot}**/Listing 
 * Input Parameters: (included in the query string)
-    * pageNum: string
+    * pageNum: int
     * pageSize: int
     * title: string
     * description: string
     * price: decimal
     * regionName: string
+> **{ApiRoot}**/Listing?pageNum=1&pageSize=5&title=Listing%20A&description=Listing%20Description&price=24.99&regionName=A
+
 * Output: List of Region_Listing that has the following fields:
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
@@ -130,6 +132,31 @@ Users can view all listings in his/her region whether the listings were created 
     * CreatedDate: DateTime, Date when Listing was created
     * RegionId: Int, Id of Region with which user is associated.
     * RegionName: String, name of Region with which user is associated.
+
+```json
+    [
+        {
+            "id": 1,
+            "title": "Listing A",
+            "description": "Description for Listing A. Details for Listing A is provided here.",
+            "price": 12.3400,
+            "creatorId": 1,
+            "createdDate": "2021-03-21T09:15:22",
+            "regionId": 1,
+            "regionName": "A"
+        },
+        {
+            "id": 6,
+            "title": "Listing F",
+            "description": "Description for Listing F. Details for Listing F is provided here.",
+            "price": 489.9900,
+            "creatorId": 4,
+            "createdDate": "2021-04-01T19:43:58",
+            "regionId": 1,
+            "regionName": "A"
+        }
+    ]
+```
 
 ### 2. Find One Listing
 Users can view any listing in his/her region whether the listings were created by him/her or not.<br>
@@ -137,6 +164,8 @@ Users can view any listing in his/her region whether the listings were created b
 * Request Type: GET
 * Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: None
+> **{ApiRoot}**/Listing/8
+
 * Output: List of Region_Listing that has the following fields:
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
@@ -146,19 +175,36 @@ Users can view any listing in his/her region whether the listings were created b
     * CreatedDate: DateTime, Date when Listing was created
     * RegionId: Int, Id of Region with which user is associated.
     * RegionName: String, name of Region with which user is associated.
-
+```json
+    {
+        "id": 8,
+        "title": "New Listing",
+        "description": "Description for New Listing",
+        "price": 27.9900,
+        "creatorId": 1,
+        "createdDate": "2021-04-05T03:59:18.903",
+        "regionId": 1,
+        "regionName": "A"
+    }
+```
 ### 3. Edit Listing
 Users can edit any listing created by himself/herself.<br>
 
 * Request Type: PUT
 * Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: (attached as body)
-    * Id: Int, Primary key of Listing, must match {id} in Service Url.
     * Title: String, Title of Listing
     * Description: String, Description of Listing
     * Price: Decimal, Price of Listing
-    * CreatorId: Int, Primary key of user who created Listing
-    * CreatedDate: DateTime, Date when Listing was created
+> **{ApiRoot}**/Listing/26
+```json
+    {
+        "Title": "Listing B",
+        "Description": "Description for Listing B",
+        "Price": 27.99
+    }
+```
+
 * Output: The updated Listing:
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
@@ -166,7 +212,17 @@ Users can edit any listing created by himself/herself.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
-* Note: If the access token's User Id is different from the Id of the request, the server denies the request and will return HTTP 401 Unauthorized response. 
+```json
+    {
+        "id": 26,
+        "title": "Listing B",
+        "description": "Description for Listing B",
+        "price": 27.99,
+        "creatorId": 4,
+        "createdDate": "2021-03-02T14:47:42.903",
+        "creator": null     // Insignificant
+    }
+```
 
 ### 4. Create Listing
 Users can create any listing.<br>
@@ -174,12 +230,18 @@ Users can create any listing.<br>
 * Request Type: POST
 * Service Url: **{ApiRoot}**/Listing
 * Input Parameters: (attached as body)
-    * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
     * Description: String, Description of Listing
     * Price: Decimal, Price of Listing
-    * CreatorId: Int, Primary key of user who created Listing
-    * CreatedDate: DateTime, Date when Listing was created
+> **{ApiRoot}**/Listing/
+```json
+    {
+        "Title": "New Listing",
+        "Description": "Description for New Listing",
+        "Price": 27.99,
+    }
+```
+
 * Output: The created Listing:
     * Id: Int, Primary key of Listing, Database will assign a new Id upon creation.
     * Title: String, Title of Listing
@@ -187,6 +249,17 @@ Users can create any listing.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
+```json
+    {
+        "id": 26,
+        "title": "New Listing",
+        "description": "Description for New Listing",
+        "price": 27.99,
+        "creatorId": 4,
+        "createdDate": "2021-04-03T03:59:18.901",    // Time of record creation
+        "creator": null     // Insignificant
+    }
+```
 
 ### 5. Delete Listing
 Users can delete any listing created by himself/herself.<br>
@@ -194,6 +267,8 @@ Users can delete any listing created by himself/herself.<br>
 * Request Type: DELETE
 * Service Url: **{ApiRoot}**/Listing/{id}
 * Input Parameters: None
+> **{ApiRoot}**/Listing/1
+
 * Output: The deleted Listing:
     * Id: Int, Primary key of Listing
     * Title: String, Title of Listing
@@ -201,7 +276,18 @@ Users can delete any listing created by himself/herself.<br>
     * Price: Decimal, Price of Listing
     * CreatorId: Int, Primary key of user who created Listing
     * CreatedDate: DateTime, Date when Listing was created
-* Note: If the access token's User Id is different from the Id of the request, the server denies the request and return HTTP 401 Unauthorized will 
+```json
+    {
+        "id": 1,
+        "title": "Listing A",
+        "description": "Descripion for Listing A. Details for Listing A is provided here.",
+        "price": 12.3400,
+        "creatorId": 1,
+        "createdDate": "2021-03-21T09:15:22",
+        "creator": null     // Insignificant
+    }
+```
+* Note: If the access token's User Id is different from the CreatorId of the listing subject to deletion, the server denies the request and returns HTTP 401 Unauthorized response. 
 
 <br><br>
 
