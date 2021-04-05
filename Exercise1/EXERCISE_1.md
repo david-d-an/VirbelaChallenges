@@ -118,8 +118,9 @@ Please implement any of the following stretch goals. They are in no particular o
 	> 	* User Contorller: 14 hours (Token exchange was a challenge) <br>
 	>	* Listing Controller: 24 houurs (Not much of challenge, jsut work) <br>
 	> * Unit Testing: 10 hours <br>
-	> * Deployment configuration: 2 hours (Smooth, GitHub and Azure made it easy) <br>
+	> * Deployment configuration: 2 hours (Smooth overall. GitHub and Azure made it easy) <br>
 	> * Documentation: 4 hours <br>
+	> * Swagger: 2 hours <br>
 
  1. What was most challenging for you?
 	> * Creating custom Token base authentication. <br>
