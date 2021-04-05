@@ -312,7 +312,7 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
     * Delete: https://localhost:15000/api/User/Listing/1 (DELETE)
 
 ## Azure App Service (Staging)
-The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
+The API is deployed on Azure on https://execise1api6921.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
 
 * ApiRoot: ***https://execise1api6921.azurewebsites.net/api***
 
