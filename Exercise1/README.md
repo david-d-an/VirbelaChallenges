@@ -299,6 +299,8 @@ Currently, the app is deployed on Azure App Service to provide a staging environ
 ## Local (Development)
 The API runs off of port 15000 over TLS by default (i.e., https://localhost:15000/api). Some of the most popular HTTP request addresses are as follows:
 
+* ApiRoot: ***https://localhost:15000/api***
+
 * User Management
     * Registration: https://localhost:15000/api/User/Register (POST)
     * Login: https://localhost:15000/api/User/Login (POST)
@@ -311,6 +313,8 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
 
 ## Azure App Service (Staging)
 The API is deployed on Azure on https://execise1api6921.scm.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
+
+* ApiRoot: ***https://execise1api6921.azurewebsites.net/api***
 
 * User Management
     * Registration: https://execise1api6921.azurewebsites.net/api/User/Register (POST)
