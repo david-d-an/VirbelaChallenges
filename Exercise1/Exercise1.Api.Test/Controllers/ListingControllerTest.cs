@@ -175,7 +175,7 @@ namespace Exercise1.Api.Controllers
             // Assert 1: Check if method uses TokenAuthorizeAttribute
             var controllerType = _controller.GetType();
             var methodInfo = controllerType.GetMethod("Post", new Type[] { 
-                typeof(Listing), 
+                typeof(ListingRequest), 
                 typeof(CancellationToken)
             });
             var attributes = 
@@ -227,7 +227,7 @@ namespace Exercise1.Api.Controllers
             var controllerType = _controller.GetType();
             var methodInfo = controllerType.GetMethod("Put", new Type[] { 
                 typeof(string), 
-                typeof(Listing), 
+                typeof(ListingRequest), 
                 typeof(CancellationToken)
             });
             var attributes = 
@@ -410,6 +410,11 @@ namespace Exercise1.Api.Controllers
                 CreatorId = authenticatedUser.Id,
                 CreatedDate = DateTime.Parse(createdDate)
             };
+            var updatedListingRequest = new ListingRequest {
+                Title = updatedListing.Title,
+                Description = updatedListing.Description,
+                Price = updatedListing.Price,
+            };
 
             mockListingRepository
                 .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
@@ -436,7 +441,7 @@ namespace Exercise1.Api.Controllers
             // Act
             var result = await _controller.Put(
                 id.ToString(), 
-                updatedListing, 
+                updatedListingRequest, 
                 cancellationToken);
 
             // Assert
@@ -480,6 +485,11 @@ namespace Exercise1.Api.Controllers
                 CreatorId = authenticatedUser.Id,
                 CreatedDate = DateTime.Parse(createdDate)
             };
+            var updatedListingRequest = new ListingRequest {
+                Title = updatedListing.Title,
+                Description = updatedListing.Description,
+                Price = updatedListing.Price,
+            };
 
             mockListingRepository
                 .Setup(x => x.GetAsync(It.Is<string>(x => x == id.ToString())))
@@ -506,7 +516,7 @@ namespace Exercise1.Api.Controllers
             // Act
             var result = await _controller.Put(
                 id.ToString(), 
-                updatedListing, 
+                updatedListingRequest, 
                 cancellationToken);
 
             // Assert
@@ -536,6 +546,11 @@ namespace Exercise1.Api.Controllers
                 CreatorId = authenticatedUser.Id,
                 CreatedDate = createdDate
             };
+            var newListingRequest = new ListingRequest {
+                Title = newListing.Title,
+                Description = newListing.Description,
+                Price = newListing.Price,
+            };
 
             mockListingRepository
                 .Setup(x => x.PostAsync(
@@ -543,8 +558,7 @@ namespace Exercise1.Api.Controllers
                         x.Title == newListing.Title &&
                         x.Description == newListing.Description &&
                         x.Price == newListing.Price &&
-                        x.CreatorId == newListing.CreatorId &&
-                        x.CreatedDate == newListing.CreatedDate
+                        x.CreatorId == newListing.CreatorId
                     )
                 ))
                 .ReturnsAsync(newListing);
@@ -555,7 +569,7 @@ namespace Exercise1.Api.Controllers
 
             // Act
             var result = await _controller.Post(
-                newListing, 
+                newListingRequest, 
                 cancellationToken);
 
             // Assert
