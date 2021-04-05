@@ -69,7 +69,7 @@ namespace Exercise1.Api.Controllers
             Listinguser user = (Listinguser)HttpContext.Items["User"];
             var region_Listing = await _unitOfWork.Region_ListingRepository
                                 .GetAsync(id.ToString());
-            if (region_Listing.RegionId != user.RegionId)
+            if (region_Listing?.RegionId != user.RegionId)
                 return Ok(null);
 
             return Ok(region_Listing);
