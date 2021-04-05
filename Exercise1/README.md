@@ -389,17 +389,18 @@ Please use the credentials in the previous section to access the database via yo
 
 ### 1. Listinguser
 
-| Id  |  UserId  |  Email                | Password   | Region |
-| :-: | :------- | :-------------------- | :--------: | :----: |
-|  1  | jsmith   | jsmith@contoso.com    | test       |   1    |
-|  2  | jdoe     | jdoe@contoso.com      | test       |   3    |
-|  3  | lmessi   | lmessi@contoso.com    | test       |   4    |
-|  4  | maradona | maradona@contoso.com  | test       |   1    |
+| Id  |  UserId  |  Email                | First Name | Last Name | Password   | Region |
+| :-: | :------- | :-------------------- | ---------- | --------- | :--------: | :----: |
+|  1  | jsmith   | jsmith@contoso.com    | John       | Smith     | test       |   1    |
+|  2  | jdoe     | jdoe@contoso.com      | Jane       | Doe       | test       |   3    |
+|  3  | lmessi   | lmessi@contoso.com    | Lionel     | Messi     | test       |   4    |
+|  4  | maradona | maradona@contoso.com  | Diego      | Maradona  | test       |   1    |
 
 <br>
 
 * ID: Primary Key, Integer, Autoincrement by 1 starting from 1.
 * UserId: String, Unique
+* Password: Plain text shown here. Databas has hashed values for security.
 
 <br>
 
