@@ -69,7 +69,7 @@ namespace Exercise1.Api.Controllers
             Listinguser user = (Listinguser)HttpContext.Items["User"];
             var region_Listing = await _unitOfWork.Region_ListingRepository
                                 .GetAsync(id.ToString());
-            if (region_Listing.RegionId != user.RegionId)
+            if (region_Listing?.RegionId != user.RegionId)
                 return Ok(null);
 
             return Ok(region_Listing);
@@ -79,7 +79,7 @@ namespace Exercise1.Api.Controllers
         [TokenAuthorize()]
         public async Task<IActionResult> Put(
             string id, 
-            Listing listingUpdateRequest, 
+            ListingRequest listingUpdateRequest, 
             CancellationToken cancellationToken)
         {
             int idNum;
@@ -113,14 +113,21 @@ namespace Exercise1.Api.Controllers
         [HttpPost]
         [TokenAuthorize()]
         public async Task<IActionResult> Post(
-            Listing listingCreateRequest, 
+            ListingRequest listingCreateRequest, 
             CancellationToken cancellationToken)
         {
             try {
                 var user = (Listinguser)HttpContext.Items["User"];
-                listingCreateRequest.CreatorId = user.Id;
-                listingCreateRequest.CreatedDate = DateTime.UtcNow;
-                Listing listing = await _unitOfWork.ListingRepository.PostAsync(listingCreateRequest);
+                var listingModel = new Listing{
+                    Title = listingCreateRequest.Title,
+                    Description = listingCreateRequest.Description,
+                    Price = listingCreateRequest.Price,
+                    CreatorId = user.Id,
+                    CreatedDate = DateTime.UtcNow
+                };
+                // listingCreateRequest.CreatorId = user.Id;
+                // listingCreateRequest.CreatedDate = DateTime.UtcNow;
+                Listing listing = await _unitOfWork.ListingRepository.PostAsync(listingModel);
                 _unitOfWork.Commit();
 
                 return CreatedAtAction(

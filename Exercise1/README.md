@@ -55,6 +55,8 @@ This chapter will explain the types of services and usage instructions.
 The terminology **ApiRoot** is used in the chapter to denote the root location of all of the API services.<br>
 Please see the chapter **API Endpoints** to get the details
 
+Details of the API Endopoints are proivded on Swagger page at *{ApplicationRoot}*/swagger 
+
 ## Authentication
 Most actions of the API app requires acees token, which can be obtained only after successful login. To login, send an HTTP POST request with a JSON body attache to ***{ApiRoot}/login*** in the following format:
 ```json
@@ -86,12 +88,12 @@ To verify the contents of the token, you can use one of the online tools such as
 Anyone can create an account by sending a JSON body attached to HTTP POST request to ***{ApiRoot}/register*** in the following format:
 ```json
 {
-    "Id": 0,                    // Int: requiredd as placeholder, value insignificant
-    "UserId": "jsmith",         // string: required
-    "FirstName": "John",        // string: can be null
-    "LastName": "Smith",        // string: can be null
-    "Password": "test",         // string: required
-    "RegionId": 1,              // Int: required, foreign key to Region.Id
+    "UserId": "jsmith",             // string: required
+    "Email": "jsmith@contoso.com",  // string: required
+    "FirstName": "John",            // string: can be null
+    "LastName": "Smith",            // string: can be null
+    "Password": "test",             // string: required
+    "RegionId": 1,                  // Int: required, foreign key to Region.Id
 }
 ```
 ### User Information Update
@@ -292,6 +294,11 @@ Users can delete any listing created by himself/herself.<br>
 <br><br>
 
 > # API Endpoints
+Details of the API Endopoints are proivded on Swagger page at *{ApplicationRoot}*/swagger.
+
+> Development: https://localhost:15000/swagger <br>
+> Staging: https://execise1api6921.azurewebsites.net/swagger <br>
+
 In this article, the common HTTPS address to access the API services will be called **Endpoint** and the url to the service domain is **ApiRoot**. The endpoint typically is in  a format similar to https://contoso.com/api/ResourceName. To activate a particular API service, a request of a specific request type (GET/PUT/POST/DELETE, etc.) must be sent to the correct endpoint with a request body or a query string if necessary. Please see the next chapter *Functionalities* for request details.
 
 Currently, the app is deployed on Azure App Service to provide a staging environment. Please consult the next two sections to find **API Endpoints** for *Development* and *Staging* environments.
@@ -299,7 +306,11 @@ Currently, the app is deployed on Azure App Service to provide a staging environ
 ## Local (Development)
 The API runs off of port 15000 over TLS by default (i.e., https://localhost:15000/api). Some of the most popular HTTP request addresses are as follows:
 
+* ApplicationRoot: ***https://localhost:15000***
+
 * ApiRoot: ***https://localhost:15000/api***
+
+* Swagger: ***https://localhost:15000/swagger***
 
 * User Management
     * Registration: https://localhost:15000/api/User/Register (POST)
@@ -314,7 +325,11 @@ The API runs off of port 15000 over TLS by default (i.e., https://localhost:1500
 ## Azure App Service (Staging)
 The API is deployed on Azure on https://execise1api6921.azurewebsites.net. HTTP endpoints are similar to those of the local address except for the domain address. Please see below for details:
 
+* ApplicationRoot: ***https://execise1api6921.azurewebsites.net***
+
 * ApiRoot: ***https://execise1api6921.azurewebsites.net/api***
+
+* Swagger: ***https://execise1api6921.azurewebsites.net/swagger***
 
 * User Management
     * Registration: https://execise1api6921.azurewebsites.net/api/User/Register (POST)

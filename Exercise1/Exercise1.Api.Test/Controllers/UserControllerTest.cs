@@ -227,6 +227,14 @@ namespace Exercise1.Api.Controllers
                 Password = password,
                 RegionId = regionId
             };
+            var newUserRequest = new ListinguserRequest {
+                Userid = userid,
+                Email = email,
+                Firstname = firstname,
+                Lastname = lastname,
+                Password = password,
+                RegionId = regionId
+            };
 
             mockListinguserRepository
                 .Setup(x => x.GetAsync(
@@ -256,7 +264,7 @@ namespace Exercise1.Api.Controllers
                 .Returns(mockListinguserRepository.Object);
 
             // Act
-            var result = await _controller.Post(newUser, cancellationToken);
+            var result = await _controller.Post(newUserRequest, cancellationToken);
 
             // Assert
             var createdResult = result as CreatedAtActionResult;
@@ -296,6 +304,14 @@ namespace Exercise1.Api.Controllers
                 Password = password,
                 RegionId = regionId
             };
+            var newUserRequest = new ListinguserRequest {
+                Userid = userid,
+                Email = email,
+                Firstname = firstname,
+                Lastname = lastname,
+                Password = password,
+                RegionId = regionId
+            };
 
             mockListinguserRepository
                 .Setup(x => x.GetAsync(
@@ -325,7 +341,7 @@ namespace Exercise1.Api.Controllers
                 .Returns(mockListinguserRepository.Object);
 
             // Act
-            var result = await _controller.Post(newUser, cancellationToken);
+            var result = await _controller.Post(newUserRequest, cancellationToken);
 
             // Assert
             Assert.NotNull(result);
