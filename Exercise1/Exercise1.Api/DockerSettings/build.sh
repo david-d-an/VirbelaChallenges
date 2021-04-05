@@ -12,19 +12,19 @@ echo "### Publishing Release code"
 dotnet publish -c Release
 echo
 echo "### Building image"
-docker build -f ./DockerSettings/Dockerfile -t execise1.api .
+docker build -f ./DockerSettings/Dockerfile -t exercise1.api .
 
-imageid=$(docker images -q execise1.api:latest)
+imageid=$(docker images -q exercise1.api:latest)
 echo
 echo "### Tagging image (${imageid}) to: ${tag_num}"
-docker tag $(docker images -q execise1.api:latest) dong82/execise1.api:$tag_num
+docker tag $(docker images -q exercise1.api:latest) dong82/exercise1.api:$tag_num
 echo
 echo "### Tagging image (${imageid}) to: latest"
-docker tag dong82/execise1.api:$tag_num dong82/execise1.api:latest
+docker tag dong82/exercise1.api:$tag_num dong82/exercise1.api:latest
 
 echo
-echo "### Pushing image (${imageid}) to Docker Hub: dong82/execise1.api:latest"
-docker push dong82/execise1.api:$tag_num
+echo "### Pushing image (${imageid}) to Docker Hub: dong82/exercise1.api:latest"
+docker push dong82/exercise1.api:$tag_num
 echo
-echo "### Pushing image (${imageid}) to Docker Hub: dong82/execise1.api:${tag_num}"
-docker push dong82/execise1.api:latest
+echo "### Pushing image (${imageid}) to Docker Hub: dong82/exercise1.api:${tag_num}"
+docker push dong82/exercise1.api:latest
