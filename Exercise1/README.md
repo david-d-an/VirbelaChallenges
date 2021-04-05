@@ -334,25 +334,27 @@ Please use the credentials in the previous section to access the database via yo
 * Creator_Id: Foreign Key to *Listinguser.Id*.
 * Created_Date: DateTime
 
-<br>
+<br><br>
 
 > # Deployment
 The API application is currently deployed on Azure as Staging for testing.
 See below for server details:
 
-> * Application: <br>
->   * Url: https://execise1api6921.azurewebsites.net <br>
->   * OS: Debian Version 10 <br>
-> * Database: <br>
->   * Type: SQL Database <br>
->   * Server: virbelalisting.database.windows.net <br>
->   * Database: VirbelaListing <br>
+* Application: <br>
+  * Url: https://execise1api6921.azurewebsites.net <br>
+  * OS: Debian Version 10 <br>
+* Database: <br>
+  * Type: SQL Database <br>
+  * Server: virbelalisting.database.windows.net <br>
+  * Database: VirbelaListing <br>
 
 <br>
 
 ## Application Deployment
 The application is deployed by GitHub action. The script is located at:
-> *{Exercise1 Root}*/.github/workflows/staging_execise1api6921.yml <br>
+```
+{Exercise1 Root}/.github/workflows/staging_execise1api6921.yml <br>
+```
 The script will be activated to deploy the application onto Azure App Service if the code is pushed from IDE or Pull Request.
 
 <br>
@@ -361,12 +363,28 @@ The script will be activated to deploy the application onto Azure App Service if
 Database structure is deployed by **Scaffolding service of Entity Framework Core**. <br>
 Database migration instructions are provided at: <br>
 
-> *{Exercise1 Root}*/Exercise1.DbScaffold/EF DB Migration Instructions.txt <br>
+```
+{Exercise1 Root}/Exercise1.DbScaffold/EF DB Migration Instructions.txt <br>
+```
 
 Currently, **Exercise1.DbScaffold** project is set up to seed the database with a basic dataset.
 The contents of the data seeding were explained in **Initial Data Set** chapter.
 Although the seeding service is convenient, the seeding should be used only during the initial set-up of the database and is not meant to migrate a large set of data.
 
+<br><br>
 
+> # Logging
+Application keeps the logs in a folder located at 
 
+```
+{Exercise1 Root}/Exercise1.Api/Logs <br>
+```
 
+Log files are created daily and files are named by the following convention:
+
+* Information: inf_*YYYYMMDD*.log <br>
+    * Captures inportant information to help maintenace and troubleshooting
+    * Configurations and environmental variables are logged
+* Error:  err_*YYYYMMDD*.log
+    * Exceptions
+    * Stacktrace
