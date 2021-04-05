@@ -15,6 +15,7 @@ using Exercise1.DataAccess.Repos.VirbelaListing;
 using Exercise1.Api.Config;
 using Exercise1.Api.Authentication;
 using Exercise1.Api.Authentication.Provider;
+using Microsoft.OpenApi.Models;
 
 namespace Exercise1.Api
 {
@@ -35,6 +36,14 @@ namespace Exercise1.Api
         {
             services.AddSingleton<IConfiguration>(Configuration);
             this.securitySettings = ApiConfig.GetSecuritySettings(Configuration);
+
+            services.AddSwaggerGen(c => c.SwaggerDoc(
+                name: "v1",
+                new OpenApiInfo() {
+                    Title = "My API",
+                    Version = "v1"
+                })
+            );
 
             // This is where CORS is set up, in case Web App connection is needed.
             services.AddCors(options => {
@@ -111,6 +120,12 @@ namespace Exercise1.Api
             else {
                 app.UseExceptionHandler("/error");
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint(
+                url: "/swagger/v1/swagger.json",
+                name: "My API V1"
+            ));
 
             app.UseRouting();
             
