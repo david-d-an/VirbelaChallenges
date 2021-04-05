@@ -9,6 +9,9 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Exercise1.Api.Common;
 using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Exercise1.Api.Authentication;
 
 namespace Exercise1.Api.Controllers
 {
@@ -19,6 +22,7 @@ namespace Exercise1.Api.Controllers
         Mock<IRepository<Listing>> mockListingRepository;
         private Mock<IRepository<Listinguser>> mockListinguserRepository;
         private Mock<IRepository<Region_Listing>> mockRegion_ListingRepository;
+        private Mock<HttpContext> httpContextMock;
         private Listinguser authenticatedUser;
         private CancellationToken cancellationToken;
 
@@ -29,6 +33,7 @@ namespace Exercise1.Api.Controllers
             mockListingRepository = new Mock<IRepository<Listing>>();
             mockListinguserRepository = new Mock<IRepository<Listinguser>>();
             mockRegion_ListingRepository = new Mock<IRepository<Region_Listing>>();
+            httpContextMock = new Mock<HttpContext>();
 
             authenticatedUser = new Listinguser {
                 Id = 1,
@@ -47,147 +52,195 @@ namespace Exercise1.Api.Controllers
         }
 
         [Fact]
-        public void DenyAnonymousUserViewingAll() {
+        public void AllowAuthenticatedUser() {
             // Arrange
+            _controller.ControllerContext = 
+                Util.GetControllerContext(authenticatedUser);
+            var user = _controller.HttpContext.Items["User"];
+            var token = _controller.Request.Headers["Authorization"];
+
+            // Anonymous user doesn't carry user info or access token
+            httpContextMock
+                .Setup(a => a.Request.Headers["Authorization"])
+                .Returns(token);
+            httpContextMock
+                .Setup(a => a.Items["User"])
+                .Returns(user);
+
+            ActionContext mockActionContext = new ActionContext(
+                httpContextMock.Object,
+                new Microsoft.AspNetCore.Routing.RouteData(), 
+                new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+
+            var mockAuthFilterContext = 
+                new AuthorizationFilterContext(
+                    mockActionContext,
+                    new List<IFilterMetadata>());
+
+            var apikeyAuthAttribute = new TokenAuthorizeAttribute();
 
             // Act
+            apikeyAuthAttribute.OnAuthorization(mockAuthFilterContext);
 
-            // Assert
-            // var controllerType = _controller.GetType();
-            // var methodInfo = controllerType.GetMethod("Get", new Type[] { 
-            //     typeof(int?), 
-            //     typeof(int?), 
-            //     typeof(string), 
-            //     typeof(string), 
-            //     typeof(string), 
-            //     typeof(string), 
-            //     typeof(string), 
-            //     typeof(CancellationToken)
-            // });
+            // Assert: Check if TokenAuthorizeAttribute returns nothing
+            var authResult = mockAuthFilterContext.Result as JsonResult;
+            Assert.Null(authResult);
+        }
 
-            // var attributes = methodInfo.GetCustomAttributes(typeof(TokenAuthorizeAttribute), true);
-            // Assert.True(attributes.Any(), "TokenAuthorizeAttribute found on ListingController.GetAll()");
+        [Fact]
+        public void DenyAnonymousUserViewingAll() {
+            // Arrange
+            // _controller.ControllerContext = 
+            //     Util.GetControllerContext(authenticatedUser);
+            // var user = _controller.HttpContext.Items["User"];
+            // var token = _controller.Request.Headers["Authorization"];
+
+            // Anonymous user doesn't carry user info or access token
+            httpContextMock
+                .Setup(a => a.Request.Headers["Authorization"])
+                .Returns((string)null);
+            httpContextMock
+                .Setup(a => a.Items["User"])
+                .Returns(null);
+
+            ActionContext mockActionContext = new ActionContext(
+                httpContextMock.Object,
+                new Microsoft.AspNetCore.Routing.RouteData(), 
+                new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+
+            var mockAuthFilterContext = 
+                new AuthorizationFilterContext(
+                    mockActionContext,
+                    new List<IFilterMetadata>());
+
+            var apikeyAuthAttribute = new TokenAuthorizeAttribute();
+
+            // Act
+            apikeyAuthAttribute.OnAuthorization(mockAuthFilterContext);
+
+            // Assert 1: Check if method uses TokenAuthorizeAttribute
+            var controllerType = _controller.GetType();
+            var methodInfo = controllerType.GetMethod("Get", new Type[] { 
+                typeof(int?), 
+                typeof(int?), 
+                typeof(string), 
+                typeof(string), 
+                typeof(string), 
+                typeof(string), 
+                typeof(CancellationToken)
+            });
+            var attributes = 
+                methodInfo
+                .GetCustomAttributes(typeof(TokenAuthorizeAttribute), true);
+            Assert.True(attributes.Any(), 
+                "TokenAuthorizeAttribute found on ListingController.GetAll()");
+
+            // Assert 2: Check if TokenAuthorizeAttribute returns HTTP 401
+            var authResult = mockAuthFilterContext.Result as JsonResult;
+            Assert.NotNull(authResult);
+            Assert.Equal(401, authResult.StatusCode);
         }
 
         [Fact]
         public void DenyAnonymousUserPosting() {
             // Arrange
+            // _controller.ControllerContext = 
+            //     Util.GetControllerContext(authenticatedUser);
+            // var user = _controller.HttpContext.Items["User"];
+            // var token = _controller.Request.Headers["Authorization"];
+
+            // Anonymous user doesn't carry user info or access token
+            httpContextMock
+                .Setup(a => a.Request.Headers["Authorization"])
+                .Returns((string)null);
+            httpContextMock
+                .Setup(a => a.Items["User"])
+                .Returns(null);
+
+            ActionContext mockActionContext = new ActionContext(
+                httpContextMock.Object,
+                new Microsoft.AspNetCore.Routing.RouteData(), 
+                new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+
+            var mockAuthFilterContext = 
+                new AuthorizationFilterContext(
+                    mockActionContext,
+                    new List<IFilterMetadata>());
+
+            var apikeyAuthAttribute = new TokenAuthorizeAttribute();
 
             // Act
+            apikeyAuthAttribute.OnAuthorization(mockAuthFilterContext);
 
-            // Assert
+            // Assert 1: Check if method uses TokenAuthorizeAttribute
+            var controllerType = _controller.GetType();
+            var methodInfo = controllerType.GetMethod("Post", new Type[] { 
+                typeof(Listing), 
+                typeof(CancellationToken)
+            });
+            var attributes = 
+                methodInfo
+                .GetCustomAttributes(typeof(TokenAuthorizeAttribute), true);
+            Assert.True(attributes.Any(), 
+                "TokenAuthorizeAttribute found on ListingController.Post()");
 
+            // Assert 2: Check if TokenAuthorizeAttribute returns HTTP 401
+            var authResult = mockAuthFilterContext.Result as JsonResult;
+            Assert.NotNull(authResult);
+            Assert.Equal(401, authResult.StatusCode);
         }
 
         [Fact]
         public void DenyAnonymousUserEditing() {
             // Arrange
+            _controller.ControllerContext = 
+                Util.GetControllerContext(authenticatedUser);
+            var user = _controller.HttpContext.Items["User"];
+            var token = _controller.Request.Headers["Authorization"];
+
+            // Anonymous user doesn't carry user info or access token
+            httpContextMock
+                .Setup(a => a.Request.Headers["Authorization"])
+                // .Returns(token);
+                .Returns((string)null);
+            httpContextMock
+                .Setup(a => a.Items["User"])
+                // .Returns(user);
+                .Returns(null);
+
+            ActionContext mockActionContext = new ActionContext(
+                httpContextMock.Object,
+                new Microsoft.AspNetCore.Routing.RouteData(), 
+                new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+
+            var mockAuthFilterContext = 
+                new AuthorizationFilterContext(
+                    mockActionContext,
+                    new List<IFilterMetadata>());
+
+            var apikeyAuthAttribute = new TokenAuthorizeAttribute();
 
             // Act
+            apikeyAuthAttribute.OnAuthorization(mockAuthFilterContext);
 
-            // Assert
+            // Assert 1: Check if method uses TokenAuthorizeAttribute
+            var controllerType = _controller.GetType();
+            var methodInfo = controllerType.GetMethod("Put", new Type[] { 
+                typeof(string), 
+                typeof(Listing), 
+                typeof(CancellationToken)
+            });
+            var attributes = 
+                methodInfo
+                .GetCustomAttributes(typeof(TokenAuthorizeAttribute), true);
+            Assert.True(attributes.Any(), 
+                "TokenAuthorizeAttribute found on ListingController.GetAll()");
 
+            // Assert 2: Check if TokenAuthorizeAttribute returns HTTP 401
+            var authResult = mockAuthFilterContext.Result as JsonResult;
+            Assert.NotNull(authResult);
+            Assert.Equal(401, authResult.StatusCode);
         }
-
-        // [Theory]
-        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 3)]
-        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5, 7)]
-        // public async void ShouldReturnAllOfOwn(int id,
-        //                                        string userid, 
-        //                                        string email,
-        //                                        string firstname,
-        //                                        string lastname,            
-        //                                        string password,
-        //                                        int regionId,
-        //                                        int listingCount) {
-        //     // Arrange
-        //     var user = new Listinguser {
-        //         Id = id,
-        //         Userid = userid,
-        //         Email = email,
-        //         Firstname = firstname,
-        //         Lastname = lastname,
-        //         Password = Util.HashPassword(password),
-        //         RegionId = regionId
-        //     };
-        //     _controller.ControllerContext = Util.GetControllerContext(user);
-
-        //     var tmpListingList = new List<Listing>(listingCount);
-        //     for (int i = 0; i < listingCount; i++)
-        //         tmpListingList.Add(new Listing());
-
-        //     mockListingRepository
-        //         .Setup(x => x.GetAsync(
-        //             It.Is<List<KeyValuePair<string, string>>>(x => 
-        //                 x.First(p => p.Key == "CreatorId").Value == user.Id.ToString()
-        //             ),
-        //             null,
-        //             null
-        //         ))
-        //         .ReturnsAsync(tmpListingList);
-        //     mockUnitOfWork
-        //         .Setup(uow => uow.ListingRepository)
-        //         .Returns(mockListingRepository.Object);
-
-        //     // Act
-        //     var result = await _controller.Get(
-        //         null, null, null, null, null, null, cancellationToken);
-
-        //     // Assert
-        //     var okResult = result as OkObjectResult;
-        //     Assert.NotNull(okResult);
-        //     Assert.Equal(200, okResult.StatusCode);
-
-        //     var valueResult = okResult.Value as IEnumerable<Listing>;
-        //     Assert.Equal(listingCount, valueResult.Count());
-        // }
-
-        // [Theory]
-        // [InlineData(1, "jsmith", "jsmith@example.com", "John", "Smith", "test1", 5)]
-        // public async void ShouldReturnNoneIfNotOwningAny(int id,
-        //                                                  string userid, 
-        //                                                  string email,
-        //                                                  string firstname,
-        //                                                  string lastname,            
-        //                                                  string password,
-        //                                                  int regionId) {
-        //     // Arrange
-        //     var testingUser = new Listinguser {
-        //         Id = id,
-        //         Userid = userid,
-        //         Email = email,
-        //         Firstname = firstname,
-        //         Lastname = lastname,
-        //         Password = Util.HashPassword(password),
-        //         RegionId = regionId
-        //     };
-        //     _controller.ControllerContext = Util.GetControllerContext(testingUser);
-
-        //     mockListingRepository
-        //         .Setup(x => x.GetAsync(
-        //             It.Is<List<KeyValuePair<string, string>>>(x => 
-        //                 x.First(p => p.Key == "CreatorId").Value == testingUser.Id.ToString()
-        //             ),
-        //             null,
-        //             null
-        //         ))
-        //         .ReturnsAsync(new List<Listing>());
-        //     mockUnitOfWork
-        //         .Setup(uow => uow.ListingRepository)
-        //         .Returns(mockListingRepository.Object);
-
-        //     // Act
-        //     var result = await _controller.Get(
-        //         null, null, null, null, null, null, cancellationToken);
-
-        //     // Assert
-        //     var okResult = result as OkObjectResult;
-        //     Assert.NotNull(okResult);
-        //     Assert.Equal(200, okResult.StatusCode);
-
-        //     var valueResult = okResult.Value as IEnumerable<Listing>;
-        //     Assert.Empty(valueResult);
-        // }
 
         [Theory]
         [InlineData(2, 5)]
