@@ -87,7 +87,8 @@ Please implement any of the following stretch goals. They are in no particular o
 	> * I prefer data size controlling by carefully designing filtering parameters <br>
 
  * Add some type of self-documenting UI such as Swagger
-	> Din't have a chance to do this one
+	> * Development: https://localhost:15000/swagger <br>
+	> * staging: https://execise1api6921.azurewebsites.net/swagger <br>
 
  * Create Unit Tests (note and include in the commit with your tests any bugs/improvements you make due to Unit Test development)
 	> * Created 2 unit test projects for API layer and DataAccess layer using **xUnit** and **Moq** <br>

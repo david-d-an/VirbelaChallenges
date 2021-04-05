@@ -78,19 +78,28 @@ namespace Exercise1.Api.Controllers
         [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<IActionResult> Post(
-            Listinguser listinguserCreateRequest, 
+            ListinguserRequest listinguserCreateRequest, 
             CancellationToken cancellationToken) 
         {
+            var newListingUser = new Listinguser {
+                Userid = listinguserCreateRequest.Userid,
+                Email = listinguserCreateRequest.Email,
+                Firstname = listinguserCreateRequest.Firstname,
+                Lastname = listinguserCreateRequest.Lastname,
+                Password = listinguserCreateRequest.Password,
+                RegionId = listinguserCreateRequest.RegionId
+            };
+
             try {
-                var password = listinguserCreateRequest.Password;
+                var password = newListingUser.Password;
                 #nullable enable
-                listinguserCreateRequest.Password = 
+                newListingUser.Password = 
                     new PasswordHasher<object?>()
                     .HashPassword(null, password);
                 #nullable disable
 
                 object parameters = new List<KeyValuePair<string, string>> {
-                    new KeyValuePair<string, string> ("UserId", listinguserCreateRequest.Userid)
+                    new KeyValuePair<string, string> ("UserId", newListingUser.Userid)
                 };
 
                 var existingUsers =  await _unitOfWork
@@ -99,16 +108,16 @@ namespace Exercise1.Api.Controllers
 
                 if (existingUsers != null && existingUsers.Count() > 0) {
                     _logger.LogError(
-                        $@"UserId '{listinguserCreateRequest.Userid}'
+                        $@"UserId '{newListingUser.Userid}'
                         already exists. Registration unsuccessful..");
                     return Problem(
-                        detail: $"UserId already exists: {listinguserCreateRequest.Userid}",
+                        detail: $"UserId already exists: {newListingUser.Userid}",
                         statusCode: 500,
                         title: "Registration Unsucessful");
                 }
 
                 var listinguser = await _unitOfWork.ListinguserRepository
-                                    .PostAsync(listinguserCreateRequest);
+                                    .PostAsync(newListingUser);
                 _unitOfWork.Commit();
 
                 _logger.LogInformation(
