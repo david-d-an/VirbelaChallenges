@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Exercise1.Data\Exercise1.Data.csproj" />
     <ProjectReference Include="..\Exercise1.DataAccess\Exercise1.DataAccess.csproj" />
     <ProjectReference Include="..\Exercise1.Common\Exercise1.Common.csproj" />

@@ -13,22 +13,22 @@ ENV ASPNETCORE_ENVIRONMENT=Docker
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends openssh-server
 RUN mkdir -p /run/sshd && echo "root:Docker!" | chpasswd
-COPY ./Execise1.Api/DockerSettings/sshd_config /etc/ssh/
+COPY ./Exercise1.Api/DockerSettings/sshd_config /etc/ssh/
 EXPOSE 2222
 
 # Build a temproary container image with dotnet SDK to build Execise1.Api app
 FROM mcr.microsoft.com/dotnet/sdk:3.1-buster AS build-env
 WORKDIR /App
-COPY ./Execise1.Common ./Execise1.Common
-COPY ./Execise1.Data ./Execise1.Data
-COPY ./Execise1.DataAccess ./Execise1.DataAccess
-COPY ./Execise1.Api ./Execise1.Api
-RUN dotnet restore ./Execise1.Common/Execise1.Common.csproj 
-RUN dotnet restore ./Execise1.Data/Execise1.Data.csproj 
-RUN dotnet restore ./Execise1.DataAccess/Execise1.DataAccess.csproj 
-RUN dotnet restore ./Execise1.Api/Execise1.Api.csproj
+COPY ./Exercise1.Common ./Exercise1.Common
+COPY ./Exercise1.Data ./Exercise1.Data
+COPY ./Exercise1.DataAccess ./Exercise1.DataAccess
+COPY ./Exercise1.Api ./Exercise1.Api
+RUN dotnet restore ./Exercise1.Common/Exercise1.Common.csproj 
+RUN dotnet restore ./Exercise1.Data/Exercise1.Data.csproj 
+RUN dotnet restore ./Exercise1.DataAccess/Exercise1.DataAccess.csproj 
+RUN dotnet restore ./Exercise1.Api/Exercise1.Api.csproj
 
-RUN dotnet publish ./Execise1.Api/Execise1.Api.csproj -c Release -o ./out
+RUN dotnet publish ./Exercise1.Api/Exercise1.Api.csproj -c Release -o ./out
 
 # Copy published Execise1.Api on the final container image. 
 FROM base AS publish-env
@@ -37,5 +37,5 @@ COPY --from=build-env /App/out .
 ENTRYPOINT [ \
     "/bin/bash", \
     "-c", \
-    "/usr/sbin/sshd && dotnet Execise1.Api.dll" \
+    "/usr/sbin/sshd && dotnet Exercise1.Api.dll" \
 ]

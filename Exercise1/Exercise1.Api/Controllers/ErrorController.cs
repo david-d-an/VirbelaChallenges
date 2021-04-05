@@ -7,6 +7,7 @@ namespace Exercise1.Api.Controllers
     public class ErrorController : ControllerBase
     {
         [Route("/error")]
+        [HttpGet]
         public IActionResult Error() => Problem();
     }
 }
