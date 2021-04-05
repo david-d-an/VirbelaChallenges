@@ -16,6 +16,7 @@ using Exercise1.Api.Config;
 using Exercise1.Api.Authentication;
 using Exercise1.Api.Authentication.Provider;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace Exercise1.Api
 {
@@ -37,13 +38,39 @@ namespace Exercise1.Api
             services.AddSingleton<IConfiguration>(Configuration);
             this.securitySettings = ApiConfig.GetSecuritySettings(Configuration);
 
-            services.AddSwaggerGen(c => c.SwaggerDoc(
-                name: "v1",
-                new OpenApiInfo() {
-                    Title = "My API",
-                    Version = "v1"
-                })
-            );
+            services.AddSwaggerGen(c => {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                    Description = 
+                        @"JWT Authorization header using the Bearer scheme.
+                        Enter token in the text input below.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {{
+                    new OpenApiSecurityScheme {
+                        Reference = new OpenApiReference {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
+                }});
+
+                c.SwaggerDoc(
+                    name: "v1",
+                    new OpenApiInfo() {
+                        Title = "Virbela Classifieds API",
+                        Version = "v1"
+                    }
+                );
+            });
+
 
             // This is where CORS is set up, in case Web App connection is needed.
             services.AddCors(options => {
