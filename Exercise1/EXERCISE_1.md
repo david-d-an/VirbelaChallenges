@@ -125,7 +125,7 @@ Please implement any of the following stretch goals. They are in no particular o
 	>	* I used Identity Server 4 previously and didn't need to implement token generation/verification. <br>
 	> 	* I learned good stuff during this challenge. <br>
 	> * Unit testing for DAL layer. Unit testing on DAL layer was not so possible for PUT and POST in/out of database. <br>
-	> * There are about 30 mroe unit testing to address all the edge cases but I ran out of time. <br>
+	> * About 30 more unit tests need to be added to address all the edge cases but I ran out of time. <br>
 	> 	* OnAuthorization mothod of custom Auth Attribute is not firing during Unit Testing <br>
 	> 	* I had to create two mocks to simulate attrubute actions that run separately from API Endpoint invocation. <br>
 
