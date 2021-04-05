@@ -20,5 +20,5 @@ WORKDIR /App
 ENTRYPOINT [ \
     "/bin/bash", \
     "-c", \
-    "/usr/sbin/sshd && dotnet execise1.Api.dll" \
+    "/usr/sbin/sshd && dotnet exercise1.Api.dll" \
 ]
