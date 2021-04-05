@@ -81,10 +81,10 @@ Please implement any of the following stretch goals. They are in no particular o
 
  * Allow paging and/or filtering of Listings
 	> * Pagination is implemented by *Skip()* and *Take()* of *System.Linq* <br>
-	> * This feature has not been tested due to the limited data size
-	> * The code snippet has been previously tested with larger data set <br>
-	> * I normally leave pagination on front end JacaScript codes such as Angular or Jquery <br>
-	> * I prefer data size controlling by carefully designing filtering parameters <br>
+	> * I normally leave pagination to the front-end JacaScript codes such as Angular or Jquery <br>
+	> * I prefer less chatty Front-End / API interaction.
+	> 	* Use filtering parameters and smaller data model to reduce data transmission to front-end <br>
+	> 	* Once bulk data is loaded to JS pagination, it's much faster to navigate afterwards <br>
 
  * Add some type of self-documenting UI such as Swagger
 	> * Development: https://localhost:15000/swagger <br>
