@@ -99,14 +99,14 @@ Anyone can create an account by sending a JSON body attached to HTTP POST reques
 ### User Information Update
 The feature has not been implemented yet.
 
-### Delte/Deactivate User
+### Delete/Deactivate User
 The feature has not been implemented yet.
 
 <br>
 
 ## Listing Management
 The API supports basic CRUD operations on listings:
-1. Get(Parameters): returns collection of listings that math Parameters 
+1. Get(Parameters): returns collection of listings that match Parameters 
 1. Get(Id): returns a listing that matches id value
 1. Put(Id, Listing-Data): updates a listing that matches id value
 1. Post(Listing-Data): creates a listing
@@ -459,18 +459,18 @@ See below for server details:
 ## Application Deployment
 The application is deployed by GitHub action. The script is located at:
 ```
-{Exercise1 Root}/.github/workflows/staging_execise1api6921.yml <br>
+{Exercise1 Root}/.github/workflows/staging_execise1api6921.yml 
 ```
 The script will be activated to deploy the application onto Azure App Service if the code is pushed from IDE or Pull Request.
 
 <br>
 
 ## Database Deployment
-Database structure is deployed by **Scaffolding service of Entity Framework Core**. <br>
+Database structure is deployed by **Scaffolding service of Entity Framework Core**. 
 Database migration instructions are provided at: <br>
 
 ```
-{Exercise1 Root}/Exercise1.DbScaffold/EF DB Migration Instructions.txt <br>
+{Exercise1 Root}/Exercise1.DbScaffold/EF DB Migration Instructions.txt 
 ```
 
 Currently, **Exercise1.DbScaffold** project is set up to seed the database with a basic dataset.
@@ -483,14 +483,14 @@ Although the seeding service is convenient, the seeding should be used only duri
 Application keeps the logs in a folder located at 
 
 ```
-{Exercise1 Root}/Exercise1.Api/Logs <br>
+{Exercise1 Root}/Exercise1.Api/Logs 
 ```
 
 Log files are created daily and files are named by the following convention:
 
-* Information: inf_*YYYYMMDD*.log <br>
-    * Captures inportant information to help maintenace and troubleshooting
+* Information: **inf_*YYYYMMDD*.log** <br>
+    * Captures important information to help maintenace and troubleshooting
     * Configurations and environmental variables are logged
-* Error:  err_*YYYYMMDD*.log
+* Error:  **err_*YYYYMMDD*.log**
     * Exceptions
     * Stacktrace
