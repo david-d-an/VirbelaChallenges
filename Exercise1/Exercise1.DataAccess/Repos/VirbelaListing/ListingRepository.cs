@@ -84,7 +84,7 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
             // TO DO: remove async from IRepository<>
             // Put is no longer async as it's under UnitOfWork
             // Async acitivty happens during SaveChangesAsync
-            // Task.Dealy added here to comply with interface where put is async
+            // Task.Delay added here to comply with interface where put is async
             await Task.Delay(0);
             _context.Listing.Update(updateRequest);
             _context.Attach<Listing>(updateRequest).State = EntityState.Modified;
