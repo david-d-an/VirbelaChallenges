@@ -17,6 +17,7 @@ using Exercise1.Api.Authentication;
 using Exercise1.Api.Authentication.Provider;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace Exercise1.Api
 {
@@ -25,8 +26,7 @@ namespace Exercise1.Api
         private SecuritySettings securitySettings;
         private readonly string Exercise1WebOrigins = "Excercise1.Web";
 
-        public Startup(IConfiguration configuration)
-        {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
@@ -106,9 +106,8 @@ namespace Exercise1.Api
         private static void EnsureDatabaseExists<T>(string connectionString) 
         where T : DbContext, new()
         {
-            /* Generic function that can work with severl different */ 
-            /* Database type. Since I use SQL Database only, the    */
-            /* rest is commented out.                               */
+            /* Generic function that can work with severl different Database */ 
+            /* types. App uses SQL Database only. Rest is commented out.     */
             var builder = new DbContextOptionsBuilder<T>();
             if (typeof(T) == typeof(VirbelaListingContext)) {
                 builder.UseSqlServer(connectionString);
@@ -143,10 +142,60 @@ namespace Exercise1.Api
 
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
+                // app.UseDatabaseErrorPage();
             }
             else {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
+
+            // Not important. App server handles TLS
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+            // app.UseCookiePolicy();
+
+            app.UseRouting();
+            // app.UseRequestLocalization();
+
+            // UseCors must preceed Auth related middlewares
+            app.UseCors(Exercise1WebOrigins);
+
+            // custom jwt auth middleware replaces builtin Auth
+            // app.UseMiddleware<JwtMiddleware>();
+            app.UseMiddleware(typeof(JwtMiddleware));
+            // app.UseAuthentication();
+            // app.UseAuthorization();
+
+            // app.UseSession();
+
+            // app.UseResponseCompression();
+
+            // Enable response cache
+            // Must be after UserCors due to MS bug
+            app.UseResponseCaching();
+
+            // These 4 test piping syntaxes are identical 
+            app.Use(async (ctx, next) => {
+                await next.Invoke();
+            });
+            app.Use(async (ctx, next) => {
+                await next();
+            });
+            app.Use(next => {
+                return async ctx => {
+                    await next.Invoke(ctx);
+                };
+            });
+            app.Use(next => {
+                return async ctx => {
+                    await next(ctx);
+                };
+            });
+
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint(
@@ -154,23 +203,15 @@ namespace Exercise1.Api
                 name: "My API V1"
             ));
 
-            app.UseRouting();
-            
-            app.UseCors(Exercise1WebOrigins);
+            // Custom Middlewares
+            // app.Use(async (context, next) => {
+            //     await context.Response.WriteAsync("Hello, World!");
+            //     await next.Invoke();
+            // });
 
-            // app.UseHttpsRedirection();
-
-            // custom jwt auth middleware replaces builtin Auth
-            app.UseMiddleware<JwtMiddleware>();
-            // app.UseAuthentication();
-            // app.UseAuthorization();
-
-            // Enable response cache
-            app.UseResponseCaching();
-            
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
-            });
+            // app.Run(async context => {
+            //     await context.Response.WriteAsync("Hello, World!");
+            // });
         }
     }
 }
