@@ -20,7 +20,7 @@
     "Exercise1.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:15000",
+      "applicationUrl": "http://localhost:15001;https://localhost:15000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
