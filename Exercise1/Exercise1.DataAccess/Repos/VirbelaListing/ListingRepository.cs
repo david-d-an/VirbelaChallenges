@@ -30,7 +30,7 @@ namespace Exercise1.DataAccess.Repos.VirbelaListing
                 var param = (List<KeyValuePair<string, string>>)parameters;
 
                 // TO DO: Improve the loop by Reflection later
-                // TO DO: Extract filtering logics in separte module
+                // TO DO: Extract filtering logics in separate module
                 foreach(KeyValuePair<string, string> kv in param) {
                     if (kv.Value == null)
                         continue;

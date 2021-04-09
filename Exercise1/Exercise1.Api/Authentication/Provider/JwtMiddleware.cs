@@ -25,8 +25,7 @@ namespace Exercise1.Api.Authentication.Provider
             this._logger = logger;
         }
 
-        public async Task Invoke(HttpContext context, IUserService userService)
-        {
+        public async Task Invoke(HttpContext context, IUserService userService) {
             var token = context.Request.Headers["Authorization"]
                         .FirstOrDefault()?.Split(" ").Last();
             if (token != null)
