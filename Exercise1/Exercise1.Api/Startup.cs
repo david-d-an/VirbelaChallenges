@@ -17,7 +17,6 @@ using Exercise1.Api.Authentication;
 using Exercise1.Api.Authentication.Provider;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 
 namespace Exercise1.Api
 {
@@ -142,7 +141,7 @@ namespace Exercise1.Api
 
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-                // app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();
             }
             else {
                 app.UseExceptionHandler("/Error");
